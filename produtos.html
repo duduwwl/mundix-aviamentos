@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Catálogo de fios e cores da Mundix Aviamentos.">
+    <title>Fios & Cores · Mundix Aviamentos</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="products">
+    <div class="site-shell">
+      <div id="siteHeader"></div>
+      <div id="productsContent">
+        <section class="page-intro"><div class="container"><span class="eyebrow yellow-text">catálogo mundix</span><h1>Fios e cores para<br>toda criação.</h1><p>Encontre materiais para crochê, tricô, amigurumi e artesanato. Escolha sua cor favorita e confira todos os detalhes antes de comprar.</p></div></section>
+        <main class="container catalog-layout">
+          <aside class="catalog-filters" aria-label="Filtros do catálogo">
+            <div class="filter-title">Filtrar <button class="filter-clear" type="button" id="clearFilters">Limpar</button></div>
+            <div class="filter-group"><strong>Tipo de fio</strong><label class="filter-option"><input type="checkbox" value="fio-malha" data-filter-type> Fio de malha</label><label class="filter-option"><input type="checkbox" value="amigurumi" data-filter-type> Algodão mercerizado</label></div>
+            <div class="filter-group"><strong>Técnica</strong><label class="filter-option"><input type="checkbox" value="Crochê" data-filter-use> Crochê</label><label class="filter-option"><input type="checkbox" value="Amigurumi" data-filter-use> Amigurumi</label><label class="filter-option"><input type="checkbox" value="Macramê" data-filter-use> Macramê</label></div>
+            <div class="filter-group"><strong>Disponibilidade</strong><span style="color:var(--muted);font-size:10px;line-height:1.5">Todas as cores exibem estoque atualizado no carrinho e no detalhe do produto.</span></div>
+          </aside>
+          <section class="catalog-content"><div class="catalog-toolbar"><p id="catalogCounter"></p><div class="search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="6.7"></circle><path d="m16.2 16.2 4.1 4.1"></path></svg><label class="sr-only" for="catalogSearch">Buscar no catálogo</label><input id="catalogSearch" type="search" placeholder="Busque por cor, técnica ou fio"></div></div><div class="catalog-grid" id="catalogGrid"></div></section>
+        </main>
+      </div>
+      <div id="siteFooter"></div>
+    </div>
+    <div id="cartSystem"></div>
+    <script src="catalog.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
