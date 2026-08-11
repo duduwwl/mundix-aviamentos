@@ -585,3 +585,44 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
   .footer-bottom { align-items: flex-start; flex-direction: column; }
   .whatsapp-float { right: 13px; bottom: 13px; width: 45px; height: 45px; }
 }
+
+/* Telas compactas: mantém as informações legíveis sem cortes ou sobreposições. */
+@media (max-width: 480px) {
+  .container { width: min(100% - 24px, 1180px); }
+  .announcement-track { gap: 20px; padding-inline: 12px; letter-spacing: .055em; }
+  .announcement-track span { gap: 6px; }
+  .site-header.mobile-open .nav-links { right: 12px; left: 12px; }
+  .brand-wordmark small { letter-spacing: .13em; }
+  .hero-grid { padding-bottom: 38px; }
+  .hero h1 { font-size: clamp(42px, 14vw, 58px); }
+  .hero-description { line-height: 1.6; }
+  .hero-actions { display: grid; grid-template-columns: 1fr; }
+  .hero-actions .button { width: 100%; }
+  .hero-meta { display: grid; gap: 9px; }
+  .hero-meta div { font-size: 11px; }
+  .hero-art { min-height: 254px; margin-bottom: -18px; transform: none; }
+  .hero-card { width: 145px; height: 205px; padding: 11px; border-radius: 17px; }
+  .hero-card img { width: 113px; height: 110px; }
+  .hero-card strong { font-size: 17px; }
+  .hero-card small { font-size: 7px; }
+  .hero-card small:last-child { font-size: 8px; }
+  .hero-card.mesh { left: 2%; top: 38px; }
+  .hero-card.ami { right: 2%; top: 18px; }
+  .hero-thread { width: 245px; height: 245px; }
+  .hero-bubble { right: 0; bottom: 0; width: 57px; height: 57px; font-size: 9px; }
+  .section-head h2 { font-size: clamp(32px, 11vw, 38px); }
+  .feature-product { padding: 16px; }
+  .feature-product .product-card-art { min-height: 190px; height: 190px; }
+  .idea-grid { grid-template-columns: 1fr; }
+  .idea-card { min-height: 172px; }
+  .insta-images { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .insta-tile { min-height: 112px; }
+  .detail-stats { grid-template-columns: 1fr; }
+  .detail-stat, .detail-stat:nth-child(2), .detail-stat:last-child { grid-column: auto; padding: 11px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .detail-stat:last-child { border-bottom: 0; }
+  .color-grid { grid-template-columns: repeat(auto-fill, minmax(31px, 1fr)); gap: 7px; }
+  .quantity-and-add { display: grid; grid-template-columns: 1fr; }
+  .add-large { min-width: 0; width: 100%; }
+  .footer-main { grid-template-columns: 1fr; }
+  .footer-brand { grid-column: auto; }
+}
