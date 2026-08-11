@@ -47,8 +47,8 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 
 /* Header */
 .announcement { color: var(--ink); background: var(--yellow); overflow: hidden; white-space: nowrap; border-bottom: 1px solid rgba(20,20,20,.13); }
-.announcement-track { display: inline-flex; min-width: 100%; gap: 44px; align-items: center; justify-content: center; padding: 8px 18px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.announcement-track span { display: inline-flex; align-items: center; gap: 9px; }
+.announcement-track { display: inline-flex; min-width: 100%; gap: 44px; align-items: center; justify-content: center; padding: 8px 18px; color: #16130b; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.announcement-track span { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 9px; color: #16130b; opacity: 1; }
 .announcement-track span::before { content: '✦'; font-size: 12px; }
 .site-header { position: relative; z-index: 20; background: rgba(255, 254, 251, .94); border-bottom: 1px solid var(--line); box-shadow: 0 5px 18px rgba(37,31,16,.035); backdrop-filter: blur(12px); }
 .site-header.is-sticky { position: sticky; top: 0; }
@@ -102,7 +102,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 29px; }
 .hero-meta { display: flex; flex-wrap: wrap; gap: 21px; margin-top: 46px; }
 .hero-meta div { display: flex; align-items: center; gap: 9px; color: #504d45; font-size: 12px; font-weight: 700; }
-.meta-icon { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: #fff9bf; }
+.meta-icon { display: grid; width: 29px; height: 29px; place-items: center; border-radius: 50%; background: var(--yellow); }
 .hero-art { position: relative; min-height: 428px; display: grid; place-items: center; }
 .hero-card { position: absolute; display: flex; width: 230px; height: 300px; flex-direction: column; justify-content: space-between; padding: 17px; border: 1px solid rgba(20,20,20,.1); border-radius: 25px; background: #fff; box-shadow: var(--shadow); overflow: hidden; }
 .hero-card::after { content: ''; position: absolute; inset: auto -30px -58px auto; width: 140px; height: 140px; border-radius: 50%; background: var(--card-tint, var(--yellow)); opacity: .3; }
@@ -122,7 +122,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .confidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
 .confidence-item { display: flex; min-height: 90px; align-items: center; justify-content: center; gap: 13px; padding: 15px 24px; border-right: 1px solid var(--line); font-size: 12px; font-weight: 800; text-align: center; }
 .confidence-item:last-child { border-right: 0; }
-.confidence-item .trust-icon { display: grid; flex: 0 0 32px; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: var(--lemon); }
+.confidence-item .trust-icon { display: grid; flex: 0 0 32px; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: var(--yellow); }
 
 .home-section { padding: 108px 0; }
 .section-head { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 36px; }
