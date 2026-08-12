@@ -302,7 +302,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 /* Cart */
 .cart-overlay { position: fixed; z-index: 70; inset: 0; background: rgba(20,20,20,.38); opacity: 0; pointer-events: none; transition: opacity .22s ease; }
 .cart-overlay.visible { opacity: 1; pointer-events: auto; }
-.cart-drawer { position: fixed; z-index: 71; top: 0; right: 0; display: flex; width: min(420px, 100vw); height: 100vh; flex-direction: column; background: #fffefb; box-shadow: -14px 0 60px rgba(20,20,20,.16); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+.cart-drawer { position: fixed; z-index: 71; top: 0; right: 0; display: flex; width: min(420px, 100vw); height: 100vh; height: 100dvh; flex-direction: column; background: #fffefb; box-shadow: -14px 0 60px rgba(20,20,20,.16); transform: translateX(105%); transition: transform .25s cubic-bezier(.2,.8,.2,1); }
 .cart-drawer.open { transform: translateX(0); }
 .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 21px 22px 17px; border-bottom: 1px solid var(--line); }
 .cart-head h2 { margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px; letter-spacing: -.06em; }
@@ -324,6 +324,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .cart-total span { color: var(--muted); font-size: 11px; font-weight: 800; }
 .cart-total strong { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; letter-spacing: -.05em; }
 .cart-foot .button { width: 100%; }
+body.locked .whatsapp-float { opacity: 0; pointer-events: none; transform: translateY(12px); }
 .toast { position: fixed; z-index: 100; left: 50%; bottom: 28px; max-width: calc(100% - 32px); padding: 12px 17px; border-radius: 999px; background: var(--ink); color: white; box-shadow: var(--shadow); font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transform: translate(-50%, 15px); transition: opacity .2s ease, transform .2s ease; }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 
@@ -530,6 +531,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
   .cart-button svg { display: block; }
   .cart-button .cart-label { display: none; }
   .cart-button .cart-count { position: absolute; top: -7px; right: -7px; min-width: 17px; height: 17px; border-radius: 50%; font-size: 9px; }
+  .cart-foot { position: relative; z-index: 2; padding: 16px 22px calc(16px + env(safe-area-inset-bottom)); }
   .hero-grid { padding-top: 43px; }
   .hero h1 { font-size: clamp(44px, 13vw, 65px); }
   .hero-description { font-size: 14px; }
