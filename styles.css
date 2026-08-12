@@ -576,7 +576,8 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
   .catalog-grid { grid-template-columns: 1fr; }
   .catalog-card { min-height: 410px; }
   .detail-page { padding-top: 25px; }
-  .detail-image { min-height: 360px; border-radius: 20px; }
+  .detail-image { min-height: 360px; border-radius: 20px; background: #fff !important; }
+  .detail-image::before, .detail-image::after { display: none; }
   .detail-image > img { height: 285px; }
   .detail-product-canvas { height: auto; max-height: 285px; }
   .detail-info h1 { font-size: 43px; }
