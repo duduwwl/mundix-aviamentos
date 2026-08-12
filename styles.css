@@ -46,11 +46,11 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .page-intro p { max-width: 600px; margin: 0; color: var(--muted); }
 
 /* Header */
-.announcement { color: #141414; background: var(--yellow); overflow: hidden; white-space: nowrap; border-bottom: 1px solid #141414; }
+.announcement { position: relative; z-index: 30; color: #141414; background: var(--yellow); overflow: hidden; white-space: nowrap; border-bottom: 1px solid #141414; }
 .announcement-track { display: inline-flex; min-width: 100%; gap: 44px; align-items: center; justify-content: center; padding: 8px 18px; color: #141414; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; -webkit-text-fill-color: #141414; }
 .announcement-track span { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 9px; color: #141414; opacity: 1; text-shadow: 0 0 .01px currentColor; -webkit-text-fill-color: #141414; }
 .announcement-track span::before { content: '✦'; font-size: 12px; }
-.announcement-track .pix-promo { padding: 3px 8px; border: 1px solid #141414; border-radius: 999px; background: #fffefb; color: #141414 !important; -webkit-text-fill-color: #141414; }
+.announcement-track .pix-promo { padding: 0; border: 0; border-radius: 0; background: transparent; color: #141414 !important; -webkit-text-fill-color: #141414; }
 .site-header { position: relative; z-index: 20; background: rgba(255, 254, 251, .94); border-top: 1px solid #141414; border-bottom: 1px solid #141414; box-shadow: none; backdrop-filter: blur(12px); }
 .site-header.is-sticky { position: sticky; top: 0; }
 .nav-row { display: grid; grid-template-columns: 230px 1fr auto; align-items: center; min-height: 84px; gap: 26px; }
@@ -514,7 +514,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
   .container { width: min(100% - 28px, 1180px); }
   .announcement-track { justify-content: center; gap: 0; padding: 5px 12px; font-size: 10px; }
   .announcement-track span:not(.pix-promo) { display: none; }
-  .announcement-track .pix-promo { padding: 3px 9px; }
+  .announcement-track .pix-promo { padding: 0; }
   .brand-wordmark strong { font-size: 17px; }
   .brand-logo { width: 42px; height: 42px; }
   .nav-row { min-height: 65px; gap: 9px; }
