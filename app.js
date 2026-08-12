@@ -48,7 +48,7 @@
               <div class="account-menu" data-account-menu hidden>
                 <span class="account-kicker">Área do cliente</span>
                 <strong>Entre para acompanhar seus pedidos.</strong>
-                <form data-customer-login><label for="customerEmail">Seu e-mail</label><input id="customerEmail" type="email" required placeholder="voce@email.com"><button class="button yellow" type="submit">Entrar</button></form>
+                <form data-customer-login data-account-mode="login"><label for="customerEmail">Seu e-mail</label><input id="customerEmail" type="email" required placeholder="voce@email.com"><label for="customerPassword">Senha</label><input id="customerPassword" type="password" required minlength="6" placeholder="Digite sua senha"><button class="button yellow" type="submit" data-account-submit>Entrar</button><button class="account-create" type="button" data-account-create>Não tem conta? <strong>Criar conta</strong></button></form>
                 <a class="manager-link" href="admin.html">Entrar no painel de gerência <span>→</span></a>
               </div>
             </div>
@@ -62,7 +62,16 @@
     const accountTrigger = $('[data-account-trigger]');
     const accountMenu = $('[data-account-menu]');
     accountTrigger?.addEventListener('click', event => { event.stopPropagation(); const open = accountMenu?.hidden; if (accountMenu) accountMenu.hidden = !open; accountTrigger.setAttribute('aria-expanded', String(Boolean(open))); });
-    $('[data-customer-login]')?.addEventListener('submit', event => { event.preventDefault(); const email = $('#customerEmail')?.value.trim(); if (!email) return; Mundix.storage.set('mundix-customer-email', email); if (accountMenu) accountMenu.hidden = true; accountTrigger?.setAttribute('aria-expanded', 'false'); toast('Acesso do cliente salvo neste navegador.'); });
+    const customerForm = $('[data-customer-login]');
+    $('[data-account-create]')?.addEventListener('click', () => {
+      const registering = customerForm?.dataset.accountMode !== 'register';
+      if (!customerForm) return;
+      customerForm.dataset.accountMode = registering ? 'register' : 'login';
+      $('.account-menu > strong')?.replaceChildren(document.createTextNode(registering ? 'Crie sua conta e acompanhe seus pedidos.' : 'Entre para acompanhar seus pedidos.'));
+      $('[data-account-submit]')?.replaceChildren(document.createTextNode(registering ? 'Criar conta' : 'Entrar'));
+      $('[data-account-create]')?.replaceChildren(document.createTextNode(registering ? 'Já tem conta? ' : 'Não tem conta? '), Object.assign(document.createElement('strong'), { textContent: registering ? 'Entrar' : 'Criar conta' }));
+    });
+    customerForm?.addEventListener('submit', event => { event.preventDefault(); const email = $('#customerEmail')?.value.trim(); const password = $('#customerPassword')?.value; if (!email || !password) return; const registering = customerForm.dataset.accountMode === 'register'; Mundix.storage.set('mundix-customer-email', email); if (accountMenu) accountMenu.hidden = true; accountTrigger?.setAttribute('aria-expanded', 'false'); toast(registering ? 'Conta criada neste navegador.' : 'Login realizado neste navegador.'); });
     document.addEventListener('click', event => { if (accountMenu && !accountMenu.hidden && !event.target.closest('.account-entry')) { accountMenu.hidden = true; accountTrigger?.setAttribute('aria-expanded', 'false'); } });
     updateCartBadge();
   }
