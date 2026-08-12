@@ -43,7 +43,15 @@
           </nav>
           <div class="nav-actions">
             <a class="nav-icon" href="produtos.html" aria-label="Pesquisar produtos">${icon('search')}</a>
-            <a class="nav-icon" href="admin.html" aria-label="Área da loja">${icon('user')}</a>
+            <div class="account-entry">
+              <button class="nav-icon account-trigger" type="button" aria-label="Abrir acesso do cliente" aria-expanded="false" data-account-trigger>${icon('user')}</button>
+              <div class="account-menu" data-account-menu hidden>
+                <span class="account-kicker">Área do cliente</span>
+                <strong>Entre para acompanhar seus pedidos.</strong>
+                <form data-customer-login><label for="customerEmail">Seu e-mail</label><input id="customerEmail" type="email" required placeholder="voce@email.com"><button class="button yellow" type="submit">Entrar</button></form>
+                <a class="manager-link" href="admin.html">Entrar no painel de gerência <span>→</span></a>
+              </div>
+            </div>
             <button class="nav-icon mobile-menu" type="button" aria-label="Abrir menu" data-mobile-menu>${icon('menu')}</button>
             <button class="nav-icon cart-button" type="button" aria-label="Abrir sacola de compras" data-open-cart>${icon('cart')}<span class="cart-label">Sacola</span><span class="cart-count" data-cart-count>0</span></button>
           </div>
@@ -51,6 +59,11 @@
       </header>`;
     $('[data-open-cart]')?.addEventListener('click', openCart);
     $('[data-mobile-menu]')?.addEventListener('click', () => $('.site-header')?.classList.toggle('mobile-open'));
+    const accountTrigger = $('[data-account-trigger]');
+    const accountMenu = $('[data-account-menu]');
+    accountTrigger?.addEventListener('click', event => { event.stopPropagation(); const open = accountMenu?.hidden; if (accountMenu) accountMenu.hidden = !open; accountTrigger.setAttribute('aria-expanded', String(Boolean(open))); });
+    $('[data-customer-login]')?.addEventListener('submit', event => { event.preventDefault(); const email = $('#customerEmail')?.value.trim(); if (!email) return; Mundix.storage.set('mundix-customer-email', email); if (accountMenu) accountMenu.hidden = true; accountTrigger?.setAttribute('aria-expanded', 'false'); toast('Acesso do cliente salvo neste navegador.'); });
+    document.addEventListener('click', event => { if (accountMenu && !accountMenu.hidden && !event.target.closest('.account-entry')) { accountMenu.hidden = true; accountTrigger?.setAttribute('aria-expanded', 'false'); } });
     updateCartBadge();
   }
 
