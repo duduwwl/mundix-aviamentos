@@ -75,7 +75,7 @@
             <a class="brand" href="index.html"><img class="brand-logo" src="assets/mundix-logo.png" alt="Logo Mundix"><span class="brand-wordmark"><strong>Mundix</strong><small>aviamentos</small></span></a>
             <p>Tudo para o seu artesanato: cores, texturas e qualidade para transformar cada ideia em uma peça única.</p>
           </div>
-          <div><div class="footer-title">Navegue</div><div class="footer-links"><a href="index.html">Início</a><a href="produtos.html">Fios & cores</a><a href="checkout.html">Finalizar compra</a><a href="admin.html">Área da loja</a></div></div>
+          <div><div class="footer-title">Navegue</div><div class="footer-links"><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="checkout.html">Finalizar compra</a><a href="admin.html">Área da loja</a></div></div>
           <div><div class="footer-title">Atendimento</div><div class="footer-contact"><strong>(34) 3215-8784</strong><a href="https://wa.me/5534998171327" target="_blank" rel="noreferrer">WhatsApp: (34) 99817-1327</a><span>Seg–sex: 9h–18h<br>Sáb: 9h–13h</span></div></div>
           <div><div class="footer-title">Retire na loja</div><div class="footer-contact"><strong>Uberlândia, MG</strong><span>Rua Antônio Salviano de Rezende, 639<br>(Antiga 19) · 38408-228</span><a href="https://www.instagram.com/mundix_aviamentos" target="_blank" rel="noreferrer">@mundix_aviamentos</a></div></div>
         </div>
