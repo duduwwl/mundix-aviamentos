@@ -118,7 +118,7 @@
     if (!target || !foot) return;
     if (!items.length) {
       target.innerHTML = `<div class="cart-empty"><div><div style="font-size:33px; margin-bottom:10px">🧶</div>Seu carrinho está esperando<br>pela sua próxima criação.</div></div>`;
-      foot.innerHTML = `<a class="button yellow" href="produtos.html">Escolher fios ${icon('arrow')}</a>`;
+      foot.innerHTML = `<a class="button yellow" href="produtos.html">Escolher produtos ${icon('arrow')}</a>`;
       updateCartBadge();
       return;
     }
