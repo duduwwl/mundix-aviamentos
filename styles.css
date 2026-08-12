@@ -547,7 +547,8 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
   .section-head p { margin-top: 14px; }
   .product-showcase { grid-template-columns: 1fr; }
   .feature-product { min-height: 405px; }
-  .feature-product .product-card-art img { width: 100%; height: 100%; padding: 8px; object-fit: contain; }
+  .feature-product .product-card-art { min-height: 280px; height: 280px; }
+  .feature-product .product-card-art img { width: 100%; height: 100%; padding: 8px; object-fit: contain !important; object-position: center; }
   .ideas-section .home-section { padding-bottom: 65px; }
   .idea-grid { gap: 10px; }
   .idea-card { min-height: 180px; padding: 15px; }
@@ -631,7 +632,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
   .hero-bubble { right: 0; bottom: 0; width: 57px; height: 57px; font-size: 9px; }
   .section-head h2 { font-size: clamp(32px, 11vw, 38px); }
   .feature-product { padding: 16px; }
-  .feature-product .product-card-art { min-height: 190px; height: 190px; }
+  .feature-product .product-card-art { min-height: 270px; height: 270px; }
   .feature-product .product-card-art img { padding: 6px; }
   .idea-grid { grid-template-columns: 1fr; }
   .idea-card { min-height: 172px; }
