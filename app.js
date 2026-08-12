@@ -29,7 +29,7 @@
   function renderHeader() {
     const active = item => page === item ? 'active' : '';
     $('#siteHeader').innerHTML = `
-      <div class="announcement"><div class="announcement-track"><span>Enviamos para todo o Brasil</span><span>Retire em Uberlândia</span><span>Pix com 5% de desconto</span></div></div>
+      <div class="announcement"><div class="announcement-track"><span>Enviamos para todo o Brasil</span><span>Retire em Uberlândia</span><span class="pix-promo">Pix com 5% de desconto</span></div></div>
       <header class="site-header is-sticky">
         <div class="container nav-row">
           <a class="brand" href="index.html" aria-label="Mundix Aviamentos — início">
