@@ -68,10 +68,20 @@
     const target = $('#adminApp');
     const data = metrics();
     target.innerHTML = `<div class="admin-shell"><aside class="admin-sidebar"><div class="admin-side-brand"><img class="brand-logo" src="assets/mundix-logo.png" alt=""><div><strong>Mundix</strong><small>painel da loja</small></div></div><nav class="admin-nav" aria-label="Navegação do painel"><button class="active" data-admin-tab="dashboard">◫ Visão geral</button><button data-admin-tab="orders">▤ Pedidos</button><button data-admin-tab="inventory">◌ Estoque por cor</button><button data-admin-tab="settings">⚙ Configurações</button></nav><div class="admin-side-foot">Modo demonstrativo<br>Dados guardados neste navegador.</div></aside><main class="admin-main"><div class="admin-top"><div><span class="eyebrow">operação mundix</span><h1>Olá, equipe.</h1></div><div class="admin-top-right"><span class="tag paid">loja aberta</span><span class="admin-avatar">MX</span></div></div>${dashboardContent(data)}${ordersContent(data)}${inventoryContent()}${settingsContent()}</main></div>`;
+    const inventorySection = $('[data-admin-section="inventory"]', target);
+    if (inventorySection) {
+      inventorySection.insertAdjacentHTML('afterbegin', '<div class="inventory-toolbar"><label class="inventory-search">⌕ <input id="inventorySearch" type="search" placeholder="Buscar produto ou cor"></label><button class="inventory-filter active" type="button" data-inventory-filter="all">Todos</button><button class="inventory-filter" type="button" data-inventory-filter="low">Estoque baixo</button><span class="inventory-tip">Use − e + para ajustar cada cor.</span></div>');
+      $$('.inventory-product', inventorySection).forEach((product, index) => product.dataset.inventoryProduct = index);
+    }
     $$('[data-admin-tab]', target).forEach(button => button.addEventListener('click', () => showTab(button.dataset.adminTab)));
     $$('[data-go-tab]', target).forEach(button => button.addEventListener('click', () => showTab(button.dataset.goTab)));
     $$('[data-order-status]', target).forEach(select => select.addEventListener('change', () => {
       const orders = Mundix.getOrders(); const order = orders.find(item => item.id === select.dataset.orderStatus); if (order) { order.status = select.value; Mundix.saveOrders(orders); MundixUI.toast(`Pedido ${order.id} atualizado para ${statusLabel[order.status][0]}.`); renderAdmin('orders'); }
+    }));
+    $('#inventorySearch', target)?.addEventListener('input', event => filterInventory(event.target.value));
+    $$('[data-inventory-filter]', target).forEach(button => button.addEventListener('click', () => {
+      $$('[data-inventory-filter]', target).forEach(item => item.classList.toggle('active', item === button));
+      filterInventory($('#inventorySearch', target)?.value || '', button.dataset.inventoryFilter);
     }));
     $$('[data-stock-change]', target).forEach(button => button.addEventListener('click', () => {
       const inventory = Mundix.getInventory(); const current = inventory[button.dataset.product][button.dataset.color] || 0; inventory[button.dataset.product][button.dataset.color] = Math.max(0, current + Number(button.dataset.stockChange)); Mundix.setInventory(inventory); MundixUI.toast('Estoque atualizado.'); renderAdmin('inventory');
@@ -81,6 +91,19 @@
   function showTab(tab) {
     $$('[data-admin-section]').forEach(section => section.classList.toggle('active', section.dataset.adminSection === tab));
     $$('[data-admin-tab]').forEach(button => button.classList.toggle('active', button.dataset.adminTab === tab));
+  }
+  function filterInventory(query = '', mode = document.querySelector('[data-inventory-filter].active')?.dataset.inventoryFilter || 'all') {
+    const needle = query.trim().toLocaleLowerCase('pt-BR');
+    $$('[data-inventory-product]').forEach(product => {
+      let visible = 0;
+      $$('.inventory-cell', product).forEach(cell => {
+        const stock = Number($('.stock-edit span', cell)?.textContent || 0);
+        const matchesSearch = !needle || cell.textContent.toLocaleLowerCase('pt-BR').includes(needle) || $('h2', product).textContent.toLocaleLowerCase('pt-BR').includes(needle);
+        cell.hidden = !(matchesSearch && (mode !== 'low' || stock <= 7));
+        if (!cell.hidden) visible += 1;
+      });
+      product.hidden = visible === 0;
+    });
   }
   function init() { if (Mundix.storage.get('mundix-admin-session', false)) renderAdmin(); else renderLogin(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
