@@ -166,8 +166,7 @@
   function paymentPriceMarkup(product, compact = false) {
     if (product.price == null) return compact ? '<strong>Consulte o valor</strong>' : '<small>valor sob consulta</small><strong>Consulte o valor</strong>';
     const creditTotal = Mundix.paymentAmount(product, 'credito');
-    const installment = creditTotal / 4;
-    return `${compact ? '' : '<small>no Pix</small>'}<strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span class="credit-copy">ou em até 4x de ${Mundix.price(installment)} no crédito<br><b>Total no crédito: ${Mundix.price(creditTotal)}</b></span>`;
+    return `${compact ? '' : '<small>no Pix</small>'}<strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span class="credit-copy">ou então em até 4x no crédito por apenas <b>${Mundix.price(creditTotal)}</b></span>`;
   }
 
   function productCard(product, large = false) {
@@ -212,13 +211,22 @@
       const text = `${product.name} ${product.category} ${product.uses.join(' ')} ${product.colors.map(c => c.name).join(' ')}`.toLocaleLowerCase('pt-BR');
       return (!search || text.includes(search)) && (!selectedTypes.length || selectedTypes.includes(product.category)) && (!selectedUses.length || selectedUses.some(use => product.uses.includes(use)));
     });
+    const sort = $('#catalogSort')?.value || 'featured';
+    if (sort !== 'featured') {
+      filtered.sort((first, second) => {
+        const firstPrice = first.basePrice ?? Number.POSITIVE_INFINITY;
+        const secondPrice = second.basePrice ?? Number.POSITIVE_INFINITY;
+        return sort === 'price-asc' ? firstPrice - secondPrice : secondPrice - firstPrice;
+      });
+    }
     target.innerHTML = filtered.length ? filtered.map(product => productCard(product)).join('') : '<div class="empty-state" style="grid-column:1/-1">Nenhum fio encontrado com estes filtros.<br><button class="filter-clear" data-clear-filters>Limpar filtros</button></div>';
     if (counter) counter.textContent = `${filtered.length} ${filtered.length === 1 ? 'produto encontrado' : 'produtos encontrados'}`;
     $('[data-clear-filters]', target)?.addEventListener('click', clearFilters);
   }
-  function clearFilters() { $$('[data-filter-type], [data-filter-use]').forEach(input => input.checked = false); if ($('#catalogSearch')) $('#catalogSearch').value = ''; renderCatalog(); }
+  function clearFilters() { $$('[data-filter-type], [data-filter-use]').forEach(input => input.checked = false); if ($('#catalogSearch')) $('#catalogSearch').value = ''; if ($('#catalogSort')) $('#catalogSort').value = 'featured'; renderCatalog(); }
   function setupCatalog() {
     $('#catalogSearch')?.addEventListener('input', renderCatalog);
+    $('#catalogSort')?.addEventListener('change', renderCatalog);
     $$('[data-filter-type], [data-filter-use]').forEach(input => input.addEventListener('change', renderCatalog));
     $('#clearFilters')?.addEventListener('click', clearFilters);
     renderCatalog();
@@ -360,7 +368,7 @@
           <div class="detail-info">
             <span class="product-category">${product.category} · ${product.meterage}</span>
             <h1>${product.name}</h1><p class="detail-description">${product.description}</p>
-            <div class="detail-price-row">${product.price == null ? '<strong>Consulte o valor</strong><span>Fale conosco para consultar disponibilidade.</span>' : `<div><strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span>no Pix</span><p>ou então em até 4x no crédito por apenas <b>${Mundix.price(Mundix.paymentAmount(product, 'credito') / 4)}</b> <small>(total no crédito: ${Mundix.price(Mundix.paymentAmount(product, 'credito'))})</small></p></div>`}</div>
+            <div class="detail-price-row">${product.price == null ? '<strong>Consulte o valor</strong><span>Fale conosco para consultar disponibilidade.</span>' : `<div><strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span>no Pix</span><p>ou então em até 4x no crédito por apenas <b>${Mundix.price(Mundix.paymentAmount(product, 'credito'))}</b></p></div>`}</div>
             <div class="detail-stats"><div class="detail-stat"><span>Composição</span><strong>${product.composition}</strong></div><div class="detail-stat"><span>Peso médio</span><strong>${product.weight}</strong></div><div class="detail-stat"><span>Agulhas</span><strong>${product.needle}</strong></div></div>
             <div class="selector-label"><span>Cor: <b>${selectedColor.name}</b></span>${stockLabel(stock)}</div>
             <div class="color-grid" aria-label="Escolha uma cor">${colorGrid(product, selectedColor)}</div>
