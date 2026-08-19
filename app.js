@@ -235,7 +235,7 @@
   function colorGrid(product, selectedColor) {
     return product.colors.map(color => {
       const stock = Mundix.stockFor(product.id, color.id);
-      return `<button type="button" class="color-swatch ${color.id === selectedColor.id ? 'selected' : ''} ${stock === 0 ? 'out' : ''}" style="${swatchStyle(color)}" data-select-color="${color.id}" title="${color.name}${stock ? ` — ${stock} em estoque` : ' — esgotado'}" aria-label="${color.name}${stock ? `, ${stock} em estoque` : ', esgotado'}" ${stock === 0 ? 'disabled' : ''}></button>`;
+      return `<button type="button" class="color-swatch ${color.id === selectedColor.id ? 'selected' : ''} ${stock === 0 ? 'out' : ''}" style="${swatchStyle(color)}" data-select-color="${color.id}" title="${color.name}${stock ? ` — ${stock} em estoque` : ' — esgotado'}" aria-label="${color.name}${stock ? `, ${stock} em estoque` : ', esgotado'}"></button>`;
     }).join('');
   }
 
@@ -329,23 +329,23 @@
       // Cada embalagem tem uma etiqueta em uma posição diferente. As máscaras
       // protegem somente a etiqueta, deixando todo o fio ao redor receber a cor.
       const labelMasks = {
-        'amigurumi-chenille': [.31, .69, .24, .78],
-        anne: [.24, .76, .37, .64],
-        'barroco-maxcolor': [.16, .84, .34, .66],
-        charme: [.17, .83, .34, .65],
-        'clea-duplo': [.24, .76, .30, .70],
-        duna: [.04, .96, .30, .69],
-        'clea-1000': [.21, .79, .33, .68],
-        encanto: [.10, .90, .32, .68],
-        'meliah-premium-35': [.23, .77, .50, .74],
-        'meliah-lux': [.22, .78, .31, .68],
-        'nautico-polipropileno': [.17, .83, .12, .88],
-        'unique-3': [.25, .75, .35, .71],
-        'unique-5': [.25, .75, .35, .71],
-        'unique-8': [.25, .75, .35, .71],
-        'fischer-glow': [.18, .82, .31, .73],
-        'meliah-pop': [.25, .75, .34, .70],
-        policromia: [.08, .65, .38, .66]
+        'amigurumi-chenille': [.14, .86, .16, .84],
+        anne: [.15, .85, .33, .69],
+        'barroco-maxcolor': [.12, .88, .30, .70],
+        charme: [.12, .88, .32, .70],
+        'clea-duplo': [.16, .84, .28, .72],
+        duna: [.08, .92, .28, .72],
+        'clea-1000': [.15, .85, .31, .70],
+        encanto: [.05, .95, .27, .73],
+        'meliah-premium-35': [.12, .88, .45, .88],
+        'meliah-lux': [.18, .82, .30, .73],
+        'nautico-polipropileno': [.08, .92, .08, .92],
+        'unique-3': [.14, .86, .25, .77],
+        'unique-5': [.14, .86, .25, .77],
+        'unique-8': [.14, .86, .25, .77],
+        'fischer-glow': [.10, .90, .27, .75],
+        'meliah-pop': [.17, .83, .28, .74],
+        policromia: [.05, .62, .37, .67]
       };
       const [labelLeft, labelRight, labelTop, labelBottom] = labelMasks[productId] || [.16, .84, .28, .72];
       const pixels = context.getImageData(0, 0, canvas.width, canvas.height), data = pixels.data;
@@ -383,7 +383,8 @@
           <div class="detail-gallery">
             <div class="detail-image ${product.id}" style="--detail-bg:#fff">
               <canvas class="detail-product-canvas" data-mesh-canvas role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>
-              <span class="color-image-label">Cor selecionada: ${selectedColor.name}</span>
+              <span class="color-image-label">${stock === 0 ? `Esgotado · ${selectedColor.name}` : `Cor selecionada: ${selectedColor.name}`}</span>
+              ${stock === 0 ? '<span class="sold-out-stamp" aria-label="Cor esgotada">Esgotado</span>' : ''}
             </div>
           </div>
           <div class="detail-info">
