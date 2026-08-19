@@ -331,14 +331,17 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .feature-product .product-card-art img { padding: 14px; }
 .catalog-image img { padding: 13px; }
 
-/* Fotos especiais: apenas o novelo principal e sem sombra adicional. */
+/* Fotos especiais: apenas o novelo principal, inteiro e sem sombra adicional. */
 img[src*="meliah-unique-classique-"] {
-  clip-path: inset(0 28% 0 0);
-  transform: translateX(14%);
+  clip-path: none;
+  transform: none;
+  object-fit: contain !important;
+  object-position: center;
 }
 .catalog-image img[src*="meliah-unique-classique-"] {
-  width: 94% !important;
-  height: 90%;
+  width: 100% !important;
+  height: 100%;
+  padding: 10px;
 }
 img[src*="fischer-glow"] { filter: none !important; }
 .consult-button { display: flex; width: 100%; min-height: 49px; align-items: center; justify-content: center; margin-top: 28px; }
