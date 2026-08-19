@@ -167,7 +167,7 @@
     const colors = product.colors.slice(0, large ? 9 : 6);
     const detailUrl = `produtos.html?produto=${product.id}`;
     if (large) return `
-      <article class="feature-product ${productClass(product)}">
+      <article class="feature-product ${productClass(product)}" data-feature-product="${product.id}">
         <div class="product-card-art"><img src="${product.image}" alt="${product.name}"></div>
         <div class="product-card-copy">
           <span class="product-category">${product.category}</span><h3>${product.shortName}</h3>
