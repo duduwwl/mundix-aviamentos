@@ -303,6 +303,34 @@
     photo.src = isUnicorn ? unicornSource : source;
   }
 
+  function paintGenericColor(canvas, color, source) {
+    if (!canvas) return;
+    const photo = new Image();
+    photo.onload = () => {
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      canvas.width = photo.naturalWidth; canvas.height = photo.naturalHeight;
+      context.drawImage(photo, 0, 0);
+      const target = hexToRgb(color.hex);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height), data = pixels.data;
+      for (let index = 0; index < data.length; index += 4) {
+        const x = (index / 4) % canvas.width, y = Math.floor((index / 4) / canvas.width);
+        const horizontal = x / canvas.width, vertical = y / canvas.height;
+        const r = data[index], g = data[index + 1], b = data[index + 2];
+        const maximum = Math.max(r, g, b), minimum = Math.min(r, g, b);
+        const isBackground = minimum > 238 && maximum - minimum < 18;
+        const yarnZone = vertical < .36 || vertical > .68 || horizontal < .17 || horizontal > .83;
+        if (isBackground || !yarnZone) continue;
+        const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
+        const texture = Math.min(1, .34 + luminance * .72);
+        data[index] = Math.round(target.r * texture);
+        data[index + 1] = Math.round(target.g * texture);
+        data[index + 2] = Math.round(target.b * texture);
+      }
+      context.putImageData(pixels, 0, 0);
+    };
+    photo.src = source;
+  }
+
   function renderDetail(productId, selectedColorId, quantity = 1) {
     const product = Mundix.getProduct(productId);
     const target = $('#productsContent');
@@ -315,9 +343,7 @@
         <section class="product-detail">
           <div class="detail-gallery">
             <div class="detail-image ${product.id}" style="--detail-bg:#fff">
-              ${product.variantBaseImage
-                ? `<canvas class="detail-product-canvas" data-mesh-canvas role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>`
-                : `<img src="${product.image}" alt="${product.name}">`}
+              <canvas class="detail-product-canvas" data-mesh-canvas role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>
               <span class="color-image-label">Cor selecionada: ${selectedColor.name}</span>
             </div>
           </div>
@@ -341,6 +367,7 @@
       </main>`;
     if (product.id === 'fio-malha') paintMeshColor($('[data-mesh-canvas]', target), selectedColor, product.variantBaseImage);
     if (product.id === 'amigurumi') paintAmigurumiColor($('[data-mesh-canvas]', target), selectedColor, product.variantBaseImage, product.image);
+    if (!['fio-malha', 'amigurumi'].includes(product.id)) paintGenericColor($('[data-mesh-canvas]', target), selectedColor, product.image);
     $$('[data-select-color]', target).forEach(button => button.addEventListener('click', () => renderDetail(productId, button.dataset.selectColor, quantity)));
     $$('[data-detail-quantity]', target).forEach(button => button.addEventListener('click', () => renderDetail(productId, selectedColor.id, Math.max(1, Math.min(stock || 1, quantity + Number(button.dataset.detailQuantity))))));
     $('[data-add-detail]', target)?.addEventListener('click', () => {
