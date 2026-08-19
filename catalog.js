@@ -1,258 +1,44 @@
-/* Dados do catálogo e funções compartilhadas da Mundix Aviamentos.
-   Persistência demonstrativa feita em localStorage para o protótipo estático. */
+/* Catálogo e operações locais da Mundix Aviamentos. */
 (function () {
-  const meshColors = [
-    ['azul-bondi', 'Azul Bondi', '#0086b6'],
-    ['verde-hortela', 'Verde Hortelã', '#76c8ad'],
-    ['lilas', 'Lilás', '#b3a1da'],
-    ['rosa-claro', 'Rosa Claro', '#f4b7c5'],
-    ['amarelo-bebe', 'Amarelo Bebê', '#f7df62'],
-    ['off-white', 'Off White', '#f5efe3'],
-    ['rose-antigo', 'Rosê Antigo', '#c57982'],
-    ['very-peri', 'Very Peri', '#6464ae'],
-    ['salmao', 'Salmão', '#ec927d'],
-    ['caramelo', 'Caramelo', '#b66b31'],
-    ['telha', 'Telha', '#a94e37'],
-    ['terracota', 'Terracota', '#c76b49'],
-    ['marrom', 'Marrom', '#5e4034'],
-    ['vermelho', 'Vermelho', '#bf2532'],
-    ['mostarda', 'Mostarda', '#c89b25'],
-    ['mango', 'Mango', '#f2a20c'],
-    ['purpura', 'Púrpura', '#7c2b72'],
-    ['bege', 'Bege', '#d7bc96'],
-    ['aluminio-cinza', 'Alumínio / Cinza', '#a7a9ab'],
-    ['preto', 'Preto', '#17181b'],
-    ['chumbo', 'Chumbo', '#44474a'],
-    ['marinho', 'Marinho', '#183158'],
-    ['azul-mar', 'Azul Mar', '#087eae'],
-    ['areia', 'Areia', '#e5d1ab'],
-    ['verde-tropical', 'Verde Tropical', '#00a277'],
-    ['pink', 'Pink', '#e52f87'],
-    ['musgo', 'Musgo', '#6a7839']
-  ].map(([id, name, hex], index) => ({ id, name, hex, stock: [22, 17, 9, 13, 25, 18, 7, 11, 16, 19, 10, 14, 8, 21, 15, 12, 7, 19, 10, 20, 6, 8, 15, 17, 11, 13, 9][index] }));
-
-  const amigurumiColors = [
-    ['unicornio', 'Unicórnio', 'linear-gradient(135deg, #37cae1 0 24%, #f6d143 24% 45%, #f26299 45% 68%, #5ecb8a 68%)'],
-    ['creme', 'Creme', '#f1dfbd'],
-    ['canario', 'Canário', '#ffd733'],
-    ['solar', 'Solar', '#f5aa13'],
-    ['hortencia', 'Hortência', '#738ac8'],
-    ['turquesa', 'Turquesa', '#1ab6bd'],
-    ['azul-bic', 'Azul Bic', '#185cb4'],
-    ['anil-profundo', 'Anil Profundo', '#29357c'],
-    ['aquario', 'Aquário', '#53cde0'],
-    ['docura', 'Doçura', '#f4aac2'],
-    ['quartzo', 'Quartzo', '#d4a9ca'],
-    ['chiclete', 'Chiclete', '#eb4d9b'],
-    ['macadamia', 'Macadâmia', '#d0aa83'],
-    ['roseira', 'Roseira', '#d2778d'],
-    ['pitaya', 'Pitaya', '#e63a77'],
-    ['camafeu', 'Camafeu', '#c68670'],
-    ['tulipa', 'Tulipa', '#e84855'],
-    ['cereja', 'Cereja', '#b81835'],
-    ['rubi', 'Rubi', '#8e1e38'],
-    ['organza', 'Organza', '#aa7cc5'],
-    ['tafeta', 'Tafetá', '#6f3c80'],
-    ['cetim', 'Cetim', '#49245e'],
-    ['rum', 'Rum', '#623a33'],
-    ['dark-cheddar', 'Dark Cheddar', '#c25c24'],
-    ['tijolo', 'Tijolo', '#b34834'],
-    ['laranja', 'Laranja', '#ed7a24'],
-    ['petroleo', 'Petróleo', '#12676f'],
-    ['musgo', 'Musgo', '#596a37'],
-    ['tiffany', 'Tiffany', '#45c3b3'],
-    ['nascente', 'Nascente', '#8bd8c6'],
-    ['eucalipto', 'Eucalipto', '#669b81'],
-    ['bandeira', 'Bandeira', '#16884d'],
-    ['pistache', 'Pistache', '#a8c948'],
-    ['violeta', 'Violeta', '#7347a7'],
-    ['alfazema', 'Alfazema', '#a790ca'],
-    ['malva', 'Malva', '#b47caa'],
-    ['marsala', 'Marsala', '#7c3444'],
-    ['tamara', 'Tâmara', '#8c572f'],
-    ['chantily', 'Chantily', '#ffe9d9'],
-    ['porcelana', 'Porcelana', '#f8f5eb'],
-    ['cacau', 'Cacau', '#5b382d'],
-    ['brigadeiro', 'Brigadeiro', '#342622'],
-    ['amendoa', 'Amêndoa', '#b98463'],
-    ['branco', 'Branco', '#ffffff'],
-    ['pedreira', 'Pedreira', '#707273'],
-    ['glacial', 'Glacial', '#b9d3de'],
-    ['off-white', 'Off White', '#f6f0e4'],
-    ['aco', 'Aço', '#7e8992'],
-    ['lhama', 'Lhama', '#dfc7a6']
-  ].map(([id, name, hex], index) => ({ id, name, hex, stock: 5 + ((index * 7 + 9) % 29) }));
-
-  const products = [
-    {
-      id: 'fio-malha',
-      category: 'Fio de Malha',
-      name: 'Fio de Malha Extra Premium com Elastano',
-      shortName: 'Fio de Malha Extra Premium',
-      tagline: 'Stretch, uniforme e pronto para projetos marcantes.',
-      price: 29.9,
-      pixPrice: 28.41,
-      image: 'assets/fio-malha-preto.png',
-      variantBaseImage: 'assets/fio-malha-base-azul-bondi.png',
-      meterage: '140 m',
-      weight: '260 g',
-      composition: '94% poliéster + 6% elastano',
-      needle: 'Crochê nº 05 a 12',
-      uses: ['Crochê', 'Tricô', 'Macramê', 'Tear', 'Tapeçaria'],
-      colors: meshColors,
-      description: 'Perfeito para quem busca qualidade, maciez e elasticidade, o Fio de Malha Extra Premium entrega um acabamento uniforme e confortável. Produzido com malhas desenvolvidas especialmente para o fio, não possui emendas ou resíduos têxteis.',
-      highlights: ['Efeito stretch: elástico e flexível', 'Espessura uniforme de 25 mm', 'Excelente retenção de cor e brilho', 'Macio e agradável ao toque'],
-      sourceName: 'Fischer Fios — especificações do produto',
-      sourceUrl: 'https://www.fischerfios.com/fios-de-malha/fio-de-malha-extra-premium'
-    },
-    {
-      id: 'amigurumi',
-      category: 'Algodão Mercerizado',
-      name: 'Fio Amigurumi 100% Algodão Mercerizado',
-      shortName: 'Fio Amigurumi',
-      tagline: 'Delicadeza, definição e cor para criar personagens únicos.',
-      price: 16,
-      pixPrice: 15.2,
-      image: 'assets/amigurumi-unicornio.png',
-      variantBaseImage: 'assets/amigurumi-base-turquesa.png',
-      meterage: '254 m',
-      weight: '125 g',
-      composition: '100% algodão mercerizado',
-      needle: 'Crochê 2,0–4,0 mm · Tricô 2,5–4,5 mm',
-      uses: ['Amigurumi', 'Crochê', 'Tricô', 'Bonecos', 'Bichinhos'],
-      colors: amigurumiColors,
-      description: 'Dê vida às suas criações com o Fio Amigurumi, desenvolvido para trabalhos delicados e detalhados. O algodão mercerizado proporciona brilho sutil, resistência e excelente definição dos pontos.',
-      highlights: ['Fio NE 6/5 — 492 TEX', 'Ótimo rendimento em 254 metros', 'Toque agradável e acabamento delicado', 'Sugestão de tapeçaria nº 16'],
-      sourceName: 'Círculo — especificações do produto',
-      sourceUrl: 'https://www.circulo.com.br/produtos/amigurumi/amigurumi'
-    }
+  const H=['#fff','#f0dfbd','#d0a47a','#9a6546','#603b2b','#1f1b1b','#f1cf2c','#e08b1d','#e35c45','#c6253a','#e883a4','#ba79ad','#835fa4','#45549d','#257dba','#2bb5bd','#258f6b','#82a33f','#68713b','#8e9296'];
+  const C=(p,n)=>n.map((x,i)=>{let[a,b]=x.includes('|')?x.split('|'):[x,x];return{id:`${p}-${a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-')}`,name:b,hex:H[i%H.length],stock:6+(i*7+p.length)%28}});
+  const extra=C('extra',['Azul Bondi','Verde Hortelã','Lilás','Rosa Claro','Amarelo Bebê','Off White','Rosê Antigo','Very Peri','Salmão','Caramelo','Telha','Terracota','Marrom','Vermelho','Mostarda','Mango','Púrpura','Bege','Alumínio / Cinza','Preto','Chumbo','Marinho','Azul Mar','Areia','Verde Tropical','Pink','Musgo']);
+  const ami=C('amigurumi',['Unicórnio','Creme','Canário','Solar','Hortência','Turquesa','Azul Bic','Anil Profundo','Aquário','Doçura','Quartzo','Chiclete','Macadâmia','Roseira','Pitaya','Camafeu','Tulipa','Cereja','Rubi','Organza','Tafetá','Cetim','Rum','Dark Cheddar','Tijolo','Laranja','Petróleo','Musgo','Tiffany','Nascente','Eucalipto','Bandeira','Pistache','Violeta','Alfazema','Malva','Marsala','Tâmara','Chantily','Porcelana','Cacau','Brigadeiro','Amêndoa','Branco','Pedreira','Glacial','Off White','Aço','Lhama']);
+  const cotton=C('cotton',['8001|8001 - Branco','8176|8176 - Off White','20|20 - Natural','7684|7684 - Porcelana','7650|7650 - Amêndoa','7625|7625 - Castanha','7148|7148 - Craft','7382|7382 - Chocolate','7504|7504 - Mogno','1074|1074 - Creme','1317|1317 - Solar','1289|1289 - Canário','1449|1449 - Ouro','7529|7529 - Terracota','3402|3402 - Vermelho Círculo','3526|3526 - Rosa Candy','6006|6006 - Lilás Candy','6394|6394 - Lavanda','2012|2012 - Azul Candy','2500|2500 - Acqua','2829|2829 - Azul Bic','2856|2856 - Anil Profundo','5203|5203 - Greenery','5767|5767 - Bandeira','5718|5718 - Militar','8212|8212 - Cromado','8336|8336 - Cinza Chumbo','8990|8990 - Preto']);
+  const chenille=C('chenille',['8001|8001 - Branco','8176|8176 - Off White','1706|1706 - Flocos','7062|7062 - Amendoim','7727|7727 - Madeira','7713|7713 - Lenha','7567|7567 - Cacau','7569|7569 - Brigadeiro','7066|7066 - Pedra Quente','7076|7076 - Caramelito','7072|7072 - Centeio','1317|1317 - Solar','7069|7069 - Mostarda','7148|7148 - Craft','7529|7529 - Terracota','4140|4140 - Tijolo','3635|3635 - Paixão','3182|3182 - Pitaya','3112|3112 - Penélope','3148|3148 - Macadâmia','3077|3077 - Quartzo','6029|6029 - Orquídea','6034|6034 - Realeza','2745|2745 - Marinheiro','2500|2500 - Acqua','2137|2137 - Hortênsia','2012|2012 - Azul Candy','2204|2204 - Verde Candy','5083|5083 - Eco','5442|5442 - Natureza','8212|8212 - Cromado','8069|8069 - Matrix','8990|8990 - Preto']);
+  const max=C('maxcolor',['8001|8001 - Branco','7684|7684 - Porcelana','7389|7389 - Rapadura','7727|7727 - Caqui','7625|7625 - Castanha','7603|7603 - Castor','7259|7259 - Bronze','7220|7220 - Tâmara','7738|7738 - Café','7311|7311 - Tabaco','1114|1114 - Amarelo Candy','1289|1289 - Canário','1449|1449 - Ouro','7207|7207 - Âmbar','4224|4224 - Peach Fuzz','3346|3346 - Suspiro','4514|4514 - Pêssego','4004|4004 - Coral Vivo','4131|4131 - Dark Cheddar','4456|4456 - Laranja','4676|4676 - Brasa','3501|3501 - Malagueta','3402|3402 - Vermelho Círculo','3635|3635 - Paixão','7136|7136 - Marsala','3390|3390 - Quartzo','3526|3526 - Rosa Candy','6085|6085 - Balé','3334|3334 - Tulipa','6156|6156 - Tutti Frutti','6133|6133 - Pink','6006|6006 - Lilás Candy','6394|6394 - Lavanda','6375|6375 - Uva','2204|2204 - Verde Candy','5091|5091 - Celeste','5669|5669 - Tiffany','5583|5583 - Verde Limão','5203|5203 - Greenery','5800|5800 - Pistache','5239|5239 - Hortaliça','5242|5242 - Trevo','5767|5767 - Bandeira','5718|5718 - Militar','2012|2012 - Azul Candy','2930|2930 - Netuno','2500|2500 - Acqua','2194|2194 - Turquesa','2829|2829 - Azul Bic','2856|2856 - Anil Profundo','8212|8212 - Cromado','8336|8336 - Cinza Chumbo','8323|8323 - Cinza Ônix','8990|8990 - Preto']);
+  const regular=C('regular',['Branco','Off White','Natural','Amêndoa','Caramelo','Terracota','Vermelho','Rosa Claro','Pink','Lilás','Lavanda','Azul Bebê','Azul Bic','Marinho','Turquesa','Verde Água','Verde Bandeira','Musgo','Mostarda','Preto']);
+  const classic=C('classic',['Topázio Fumê','Laranja','Oliva','Berinjela','Petróleo','Chumbo','Ametista','Fendi','Marinho','Café','Celeste','Suspiro','Hortênsia','Penélope','Deep Blue','Verde Bandeira','Rosa Gloss','Romã','Preto','Papaia','Panacota','Outono','Nude Rosa','Mint','Melancia','Gergelim','Cookie','Canela','Cacau','Alcaparra','Açafrão']);
+  const make=(id,category,name,tagline,image,spec,colors,sourceUrl='')=>({id,category,name,shortName:name,tagline,price:null,image,...spec,colors,description:spec.description,highlights:spec.highlights,sourceName:sourceUrl?'Especificações da marca':'Imagem fornecida pela loja',sourceUrl});
+  const products=[
+    {id:'fio-malha',category:'Fio de Malha',name:'Fio de Malha Extra Premium com Elastano',shortName:'Fio de Malha Extra Premium',tagline:'Stretch, uniforme e pronto para projetos marcantes.',price:29.9,pixPrice:28.41,image:'assets/fio-malha-preto.png',variantBaseImage:'assets/fio-malha-base-azul-bondi.png',meterage:'140 m',weight:'260 g',composition:'94% poliéster + 6% elastano',needle:'Crochê nº 05 a 12',uses:['Crochê','Tricô','Macramê','Tear','Tapeçaria'],colors:extra,description:'Fio de malha macio, uniforme e elástico para projetos artesanais com acabamento confortável.',highlights:['Efeito stretch','Espessura de 25 mm','Sem emendas','Retenção de cor e brilho'],sourceName:'Fischer Fios',sourceUrl:'https://www.fischerfios.com/fios-de-malha/fio-de-malha-extra-premium'},
+    {id:'amigurumi',category:'Algodão Mercerizado',name:'Fio Amigurumi 100% Algodão Mercerizado',shortName:'Fio Amigurumi',tagline:'Delicadeza, definição e cor para criar personagens únicos.',price:16,pixPrice:15.2,image:'assets/amigurumi-unicornio.png',variantBaseImage:'assets/amigurumi-base-turquesa.png',meterage:'254 m',weight:'125 g',composition:'100% algodão mercerizado',needle:'Crochê 2,0–4,0 mm · Tricô 2,5–4,5 mm',uses:['Amigurumi','Crochê','Tricô','Bonecos','Bichinhos'],colors:ami,description:'Fio desenvolvido para trabalhos delicados, com brilho sutil e excelente definição dos pontos.',highlights:['NE 6/5 — 492 TEX','254 m','Toque agradável','Sugestão de tapeçaria nº 16'],sourceName:'Círculo',sourceUrl:'https://www.circulo.com.br/produtos/amigurumi/amigurumi'},
+    make('amigurumi-chenille','Fio Chenille','Amigurumi Chenille','Volume macio para bichinhos e amigurumis cheios de afeto.','assets/amigurumi-chenille.webp',{meterage:'110 m',weight:'100 g',composition:'100% poliéster · 909 TEX',needle:'Crochê 4,5–7,0 mm · Tricô 4,5–6,0 mm',uses:['Amigurumi','Bichinhos','Almofadas','Decoração'],description:'Fio chenille de toque aveludado para amigurumis volumosos e peças decorativas.',highlights:['33 cores oficiais','Toque macio','Volume uniforme','OEKO-TEX®']},chenille,'https://www.circulo.com.br/products/amigurumi/amigurumi-chenille'),
+    make('anne','Algodão Mercerizado','Anne 500 m','Clássico leve e cintilante para roupa, acessórios e decoração.','assets/anne-500m.webp',{meterage:'500 m',weight:'147 g',composition:'100% algodão mercerizado · Ne 4/2 · 295 TEX',needle:'Crochê 1,75 mm · Tricô 3,0 e 3,5 mm',uses:['Crochê','Vestuário','Acessórios','Decoração'],description:'Fio tradicional de alto rendimento com acabamento cintilante e toque macio.',highlights:['83 cores oficiais','OEKO-TEX®','Regulagem 8 para máquina','Também disponível em 65 m']},cotton,'https://www.circulo.com.br/produtos/croche/anne'),
+    make('barroco-maxcolor','Algodão','Barroco Maxcolor 4/6','Algodão encorpado para peças de destaque e decoração.','assets/barroco-maxcolor.webp',{meterage:'452 m',weight:'400 g',composition:'100% algodão · Ne 4/6 · 885 TEX',needle:'Crochê 4,0 mm · Tricô 4,5 mm',uses:['Crochê','Tricô','Tapetes','Decoração'],description:'Fio de algodão macio e resistente para projetos de decoração, moda e tapeçaria.',highlights:['54 cores oficiais','Massa pura e fibras longas','Excelente fixação de cor','Também disponível em 200 g']},max,'https://www.circulo.com.br/produtos/croche/barroco-maxcolor-46'),
+    make('charme','Algodão Mercerizado','Charme','Brilho, maciez e caimento para criações delicadas.','assets/charme.webp',{meterage:'396 m',weight:'150 g',composition:'100% algodão mercerizado · Ne 8/5 · 378 TEX',needle:'Crochê 2,5–3,5 mm · Tricô 3,0–4,0 mm',uses:['Crochê','Tricô','Moda','Acessórios'],description:'Fio mercerizado de acabamento sofisticado para vestuário e acessórios.',highlights:['59 cores oficiais','Brilho sutil','Boa definição de ponto','OEKO-TEX®']},cotton,'https://www.circulo.com.br/produtos/croche/charme-2'),
+    make('clea-duplo','Algodão Mercerizado','Cléa Duplo','Fio fino e delicado para rendas, barrados e acabamentos.','assets/clea-duplo.png',{meterage:'508 m',weight:'150 g',composition:'100% algodão mercerizado · Ne 8/4 · 295 TEX',needle:'Crochê 2,0 mm · Tricô 2,0–4,0 mm',uses:['Crochê','Rendas','Barrados','Bordados'],description:'Algodão mercerizado para trabalhos detalhados, com rendimento e definição.',highlights:['69 cores oficiais','Fio Ne 8/4','Acabamento delicado','OEKO-TEX®']},cotton,'https://www.circulo.com.br/produtos/ganchillo/clea-duplo-1'),
+    make('duna','Algodão Mercerizado','Duna','Algodão macio e estruturado para moda e decoração.','assets/duna.jpg',{meterage:'170 m',weight:'100 g',composition:'100% algodão mercerizado · Ne 4/4 · 590 TEX',needle:'Crochê 2,5–3,0 mm · Tricô 3,5–4,5 mm',uses:['Crochê','Tricô','Bolsas','Decoração'],description:'Fio encorpado de algodão mercerizado para peças com textura e forma.',highlights:['Cartela ampla de cores','Também disponível em 200 g','Bom rendimento','OEKO-TEX®']},cotton,'https://www.circulo.com.br/produtos/croche/duna'),
+    make('clea-1000','Algodão Mercerizado','Cléa 1000','Muito rendimento para projetos delicados e contínuos.','assets/clea-1000.webp',{meterage:'1000 m',weight:'151 g',composition:'100% algodão mercerizado',needle:'Crochê fino · conforme a receita',uses:['Crochê','Rendas','Barrados','Bordados'],description:'Linha fina de alto rendimento para trabalhos detalhados.',highlights:['Cone de 1000 m','Cores firmes','Acabamento mercerizado','Ideal para detalhes']},cotton,'https://www.circulo.com.br/'),
+    make('encanto','Fio de Viscose','Encanto 100% Viscose','Brilho sedoso para peças leves e detalhes especiais.','assets/encanto-128m.webp',{meterage:'128 m',weight:'100 g',composition:'100% viscose',needle:'Conforme a receita',uses:['Crochê','Tricô','Franjas','Moda'],description:'Fio de viscose com brilho elegante e caimento fluido.',highlights:['Brilho sedoso','128 m','100% viscose','Ideal para detalhes']},regular,'https://www.circulo.com.br/produtos/croche/encanto'),
+    make('meliah-premium-35','Fio de Malha','Fio de Malha Premium Meliah 35 mm Anti-Pilling','Fio de malha premium para peças modernas e resistentes.','assets/meliah-malha-premium-35mm.jpg',{meterage:'Consulte disponibilidade',weight:'Consulte disponibilidade',composition:'Fio de malha premium anti-pilling',needle:'Indicada conforme o projeto',uses:['Crochê','Macramê','Cestos','Bolsas'],description:'Fio de malha premium de 35 mm com tratamento anti-pilling.',highlights:['35 mm','Anti-pilling','Toque premium','Cores Meliah']},regular,'https://www.meliahfios.com.br/'),
+    make('meliah-lux','Fio de Malha','Fio Lux Meliah','Fio de malha com acabamento especial para criações sofisticadas.','assets/meliah-fio-lux.webp',{meterage:'Consulte disponibilidade',weight:'Consulte disponibilidade',composition:'Fio de malha premium',needle:'Indicada conforme o projeto',uses:['Crochê','Macramê','Bolsas','Decoração'],description:'Fio de malha premium Meliah para peças autorais de acabamento diferenciado.',highlights:['14 cores oficiais','Textura encorpada','Para bolsas e cestos','Linha premium']},C('lux',['Azul Noir','Rosa Bourbom','Pó de Lua','Diamante','Preto Metálico','Calda de Açúcar','Escarlate','Rosa Provence','Ameixa Negra','Avelã','Verde Mediterrâneo','Topázio Imperial','Prata Celeste','Champanhe Rosé']),'https://www.meliahfios.com.br/CategoriaId_8/Fio-Lux---Fio-De-Malha-Premium.html'),
+    make('nautico-polipropileno','Fio Náutico','Fio Náutico Polipropileno 3 mm','Cordão firme para tramas estruturadas e resistentes.','assets/fio-nautico-polipropileno-3mm.webp',{meterage:'Consulte disponibilidade',weight:'Consulte disponibilidade',composition:'Polipropileno',needle:'Indicada conforme o projeto',uses:['Macramê','Bolsas','Sousplats','Decoração'],description:'Cordão náutico de 3 mm para projetos que pedem estrutura e resistência.',highlights:['Espessura 3 mm','Cordão estruturado','Uso decorativo','Variedade de cores']},regular),
+    make('unique-3','Fio Náutico','Fio Náutico Premium Unique Classique 3 mm','Cordão premium para detalhes firmes e acabamento preciso.','assets/meliah-unique-classique-3mm.jpg',{meterage:'300 m',weight:'500 g',composition:'Poliéster',needle:'Indicada conforme o projeto',uses:['Macramê','Bolsas','Crochê','Decoração'],description:'Fio náutico premium de poliéster com 3 mm para peças resistentes.',highlights:['3 mm','300 m','500 g','Poliéster']},classic,'https://www.meliahfios.com.br/'),
+    make('unique-5','Fio Náutico','Fio Náutico Premium Unique Classique 5 mm','Mais presença e firmeza para bolsas, cestos e decoração.','assets/meliah-unique-classique-5mm.webp',{meterage:'Consulte disponibilidade',weight:'Consulte disponibilidade',composition:'Poliéster',needle:'Indicada conforme o projeto',uses:['Macramê','Bolsas','Cestos','Decoração'],description:'Cordão náutico premium de 5 mm para peças de maior estrutura.',highlights:['5 mm','Poliéster','Acabamento premium','Cores Meliah']},classic,'https://www.meliahfios.com.br/'),
+    make('unique-8','Fio Náutico','Fio Náutico Premium Unique Classique 8 mm','Espessura robusta para grandes projetos artesanais.','assets/meliah-unique-classique-8mm.jpg',{meterage:'Consulte disponibilidade',weight:'Consulte disponibilidade',composition:'Poliéster',needle:'Indicada conforme o projeto',uses:['Macramê','Cestos','Tapetes','Decoração'],description:'Cordão náutico premium de 8 mm para projetos maiores e bem estruturados.',highlights:['8 mm','Poliéster','Estrutura reforçada','Cores Meliah']},classic,'https://www.meliahfios.com.br/'),
+    make('fischer-glow','Fio Especial','Fio Náutico Glow Fischer.co','Lurex para criar pontos luminosos e cheios de personalidade.','assets/fischer-glow.png',{meterage:'200 m',weight:'Consulte disponibilidade',composition:'100% poliéster com lurex',needle:'Indicada conforme o projeto',uses:['Crochê','Macramê','Bolsas','Decoração'],description:'Cordão de poliéster com lurex para peças com brilho e textura.',highlights:['5 mm','200 m','12 cores oficiais','Brilho de lurex']},C('glow',['Grinch','Olho de Tigre','Opala Negra','Ágata Laranja','Místico','Turmalina Rosa','Safira','Ametista','Âmbar','Jásper','Diamante','Silver']),'https://www.fischerfios.com.br/cordoes/fio-nautico-glow-5mm-200-metros'),
+    make('meliah-pop','Fio de Malha','Meliah Pop','Fio de malha colorido e cheio de energia para criar sem limites.','assets/meliah-pop.webp',{meterage:'Consulte disponibilidade',weight:'Consulte disponibilidade',composition:'Fio de malha premium',needle:'Indicada conforme o projeto',uses:['Crochê','Macramê','Bolsas','Cestos'],description:'Fio de malha premium de cores vibrantes para projetos autorais.',highlights:['18 cores oficiais','Linha premium','Cores vibrantes','Para bolsas e cestos']},C('pop',['Sonho de Valsa','Marine','Royal','Cappuccino','Pôr do Sol','Verde Menta','Chiclete','Canário','Caramelo','Rosa Pop','Balé','Floresta','Off','Vinil','Cereja','Vinho','Cielo','Verde Bandeira']),'https://www.meliahfios.com.br/CategoriaId_0%2C%2C%2C1/Meliah.html'),
+    make('policromia','Fio Especial','Policromia Fischer.co','Cordão multicolor para combinações criativas e marcantes.','assets/fischer-policromia.jpg',{meterage:'400 m',weight:'Consulte disponibilidade',composition:'Cordão multicolor',needle:'Indicada conforme o projeto',uses:['Crochê','Macramê','Bolsas','Decoração'],description:'Cordão multicolor de 5 mm para projetos com contraste e combinações originais.',highlights:['5 mm','400 m','Efeito multicolor','Para bolsas e decoração']},C('policromia',['Terracota','Caramelo','Areia','Marrom','Rosa','Azul','Verde','Preto']),'https://www.fischerfios.com.br/')
   ];
-
-  const storage = {
-    get(key, fallback) {
-      try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
-    },
-    set(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
-  };
-
-  function defaultInventory() {
-    return Object.fromEntries(products.map(product => [product.id, Object.fromEntries(product.colors.map(color => [color.id, color.stock]))]));
-  }
-
-  function getInventory() {
-    const inventory = storage.get('mundix-inventory', null);
-    if (!inventory) {
-      const initial = defaultInventory();
-      storage.set('mundix-inventory', initial);
-      return initial;
-    }
-    return inventory;
-  }
-
-  function setInventory(inventory) { storage.set('mundix-inventory', inventory); }
-  function getProduct(id) { return products.find(product => product.id === id); }
-  function getColor(productId, colorId) { return getProduct(productId)?.colors.find(color => color.id === colorId); }
-  function stockFor(productId, colorId) { return getInventory()?.[productId]?.[colorId] ?? 0; }
-  function price(value) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value); }
-
-  function getCart() { return storage.get('mundix-cart', []); }
-  function saveCart(cart) { storage.set('mundix-cart', cart); window.dispatchEvent(new CustomEvent('mundix:cart')); }
-  function addToCart(productId, colorId, amount = 1) {
-    const stock = stockFor(productId, colorId);
-    if (!stock) return { ok: false, message: 'Esta cor está esgotada no momento.' };
-    const cart = getCart();
-    const item = cart.find(entry => entry.productId === productId && entry.colorId === colorId);
-    const current = item?.quantity || 0;
-    if (current + amount > stock) return { ok: false, message: `Temos ${stock} unidade(s) desta cor em estoque.` };
-    if (item) item.quantity += amount;
-    else cart.push({ productId, colorId, quantity: amount });
-    saveCart(cart);
-    return { ok: true };
-  }
-  function updateCartItem(productId, colorId, quantity) {
-    const cart = getCart();
-    const index = cart.findIndex(entry => entry.productId === productId && entry.colorId === colorId);
-    if (index < 0) return;
-    if (quantity <= 0) cart.splice(index, 1);
-    else cart[index].quantity = Math.min(quantity, stockFor(productId, colorId));
-    saveCart(cart);
-  }
-  function clearCart() { saveCart([]); }
-  function cartDetails() {
-    return getCart().map(item => ({ ...item, product: getProduct(item.productId), color: getColor(item.productId, item.colorId) }))
-      .filter(item => item.product && item.color);
-  }
-  function cartSubtotal() { return cartDetails().reduce((total, item) => total + item.product.price * item.quantity, 0); }
-  function cartCount() { return getCart().reduce((total, item) => total + item.quantity, 0); }
-
-  function getOrders() {
-    const current = storage.get('mundix-orders', null);
-    if (current) return current;
-    const demo = [
-      { id: 'MND-1048', createdAt: '2026-08-10T14:20:00', customer: { name: 'Ana Souza', city: 'Uberlândia, MG' }, items: [{ productId: 'amigurumi', colorId: 'tiffany', quantity: 3 }], total: 58.97, shipping: 5, method: 'pix', delivery: 'delivery', status: 'pago' },
-      { id: 'MND-1047', createdAt: '2026-08-10T10:05:00', customer: { name: 'Lívia Martins', city: 'Uberlândia, MG' }, items: [{ productId: 'fio-malha', colorId: 'verde-hortela', quantity: 2 }], total: 55.8, shipping: 0, method: 'credito', delivery: 'pickup', status: 'separando' },
-      { id: 'MND-1046', createdAt: '2026-08-09T16:42:00', customer: { name: 'Mariana Reis', city: 'São Paulo, SP' }, items: [{ productId: 'fio-malha', colorId: 'very-peri', quantity: 1 }], total: 41.8, shipping: 13.9, method: 'credito', delivery: 'delivery', status: 'enviado' }
-    ];
-    storage.set('mundix-orders', demo);
-    return demo;
-  }
-  function saveOrders(orders) { storage.set('mundix-orders', orders); }
-  function createOrder(payload) {
-    const cart = cartDetails();
-    if (!cart.length) throw new Error('Seu carrinho está vazio.');
-    const inventory = getInventory();
-    cart.forEach(item => {
-      if ((inventory[item.product.id]?.[item.color.id] || 0) < item.quantity) throw new Error(`Estoque insuficiente para ${item.product.shortName} — ${item.color.name}.`);
-    });
-    cart.forEach(item => { inventory[item.product.id][item.color.id] -= item.quantity; });
-    setInventory(inventory);
-    const order = {
-      id: `MND-${Math.floor(1000 + Math.random() * 8999)}`,
-      createdAt: new Date().toISOString(),
-      customer: payload.customer,
-      items: cart.map(item => ({ productId: item.product.id, colorId: item.color.id, quantity: item.quantity })),
-      subtotal: cartSubtotal(),
-      shipping: payload.shipping,
-      total: cartSubtotal() + payload.shipping,
-      method: payload.method,
-      delivery: payload.delivery,
-      status: payload.method === 'pix' ? 'aguardando pagamento' : 'novo'
-    };
-    const orders = getOrders();
-    orders.unshift(order);
-    saveOrders(orders);
-    clearCart();
-    return order;
-  }
-
-  function shippingQuote(cep, subtotal = 0) {
-    const digits = String(cep || '').replace(/\D/g, '');
-    if (digits.length !== 8) return null;
-    const prefix = Number(digits[0]);
-    const regions = [
-      { name: 'Norte', value: 29.9, days: '8–12 dias úteis' },
-      { name: 'Norte / Nordeste', value: 25.9, days: '7–10 dias úteis' },
-      { name: 'Nordeste', value: 22.9, days: '6–9 dias úteis' },
-      { name: 'Sudeste', value: 15.9, days: '3–6 dias úteis' },
-      { name: 'Sudeste / Centro-Oeste', value: 17.9, days: '4–7 dias úteis' },
-      { name: 'Sul / Centro-Oeste', value: 18.9, days: '4–7 dias úteis' },
-      { name: 'Sul', value: 20.9, days: '5–8 dias úteis' },
-      { name: 'Sul', value: 21.9, days: '5–8 dias úteis' },
-      { name: 'Sudeste', value: 14.9, days: '3–6 dias úteis' },
-      { name: 'São Paulo', value: 12.9, days: '2–5 dias úteis' }
-    ];
-    const region = regions[prefix] || regions[3];
-    const free = subtotal >= 180;
-    return { ...region, value: free ? 0 : region.value, free, label: free ? 'Frete grátis' : `Entrega ${region.name}` };
-  }
-
-  function asset(color, fallback) {
-    return color?.hex || fallback || '#f7dc32';
-  }
-
-  window.Mundix = {
-    products, getProduct, getColor, stockFor, getInventory, setInventory,
-    getCart, addToCart, updateCartItem, clearCart, cartDetails, cartSubtotal, cartCount,
-    getOrders, saveOrders, createOrder, shippingQuote, price, asset, storage
-  };
+  const storage={get:(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+  const defaultInventory=()=>Object.fromEntries(products.map(p=>[p.id,Object.fromEntries(p.colors.map(c=>[c.id,c.stock]))]));
+  function getInventory(){const b=defaultInventory(),i=storage.get('mundix-inventory',{});let dirty=false;for(const[id,c]of Object.entries(b)){if(!i[id]){i[id]=c;dirty=true}else for(const[k,v]of Object.entries(c))if(i[id][k]==null){i[id][k]=v;dirty=true}}if(dirty||!localStorage.getItem('mundix-inventory'))storage.set('mundix-inventory',i);return i}
+  const setInventory=i=>storage.set('mundix-inventory',i),getProduct=id=>products.find(p=>p.id===id),getColor=(p,c)=>getProduct(p)?.colors.find(x=>x.id===c),stockFor=(p,c)=>getInventory()?.[p]?.[c]??0,price=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v),getCart=()=>storage.get('mundix-cart',[]),saveCart=c=>{storage.set('mundix-cart',c);window.dispatchEvent(new CustomEvent('mundix:cart'))};
+  function addToCart(p,c,a=1){const product=getProduct(p);if(!product||product.price==null)return{ok:false,message:'Consulte a Mundix para confirmar o valor e a disponibilidade deste produto.'};const stock=stockFor(p,c);if(!stock)return{ok:false,message:'Esta cor está esgotada no momento.'};const cart=getCart(),item=cart.find(x=>x.productId===p&&x.colorId===c),current=item?.quantity||0;if(current+a>stock)return{ok:false,message:`Temos ${stock} unidade(s) desta cor em estoque.`};if(item)item.quantity+=a;else cart.push({productId:p,colorId:c,quantity:a});saveCart(cart);return{ok:true}}
+  function updateCartItem(p,c,q){const cart=getCart(),n=cart.findIndex(x=>x.productId===p&&x.colorId===c);if(n<0)return;if(q<=0)cart.splice(n,1);else cart[n].quantity=Math.min(q,stockFor(p,c));saveCart(cart)}
+  const clearCart=()=>saveCart([]),cartDetails=()=>getCart().map(x=>({...x,product:getProduct(x.productId),color:getColor(x.productId,x.colorId)})).filter(x=>x.product&&x.color),cartSubtotal=()=>cartDetails().reduce((t,x)=>t+(x.product.price||0)*x.quantity,0),cartCount=()=>getCart().reduce((t,x)=>t+x.quantity,0),getOrders=()=>storage.get('mundix-orders',[]),saveOrders=o=>storage.set('mundix-orders',o);
+  function createOrder(payload){const cart=cartDetails();if(!cart.length)throw Error('Seu carrinho está vazio.');const inventory=getInventory();cart.forEach(x=>{if((inventory[x.product.id]?.[x.color.id]||0)<x.quantity)throw Error(`Estoque insuficiente para ${x.product.shortName} — ${x.color.name}.`)});cart.forEach(x=>inventory[x.product.id][x.color.id]-=x.quantity);setInventory(inventory);const order={id:`MND-${Math.floor(1000+Math.random()*8999)}`,createdAt:new Date().toISOString(),customer:payload.customer,items:cart.map(x=>({productId:x.product.id,colorId:x.color.id,quantity:x.quantity})),subtotal:cartSubtotal(),shipping:payload.shipping,total:cartSubtotal()+payload.shipping,method:payload.method,delivery:payload.delivery,status:payload.method==='pix'?'aguardando pagamento':'novo'};const orders=getOrders();orders.unshift(order);saveOrders(orders);clearCart();return order}
+  function shippingQuote(cep,subtotal=0){const d=String(cep||'').replace(/\D/g,'');if(d.length!==8)return null;const r=[['Norte',29.9,'8–12 dias úteis'],['Norte / Nordeste',25.9,'7–10 dias úteis'],['Nordeste',22.9,'6–9 dias úteis'],['Sudeste',15.9,'3–6 dias úteis'],['Sudeste / Centro-Oeste',17.9,'4–7 dias úteis'],['Sul / Centro-Oeste',18.9,'4–7 dias úteis'],['Sul',20.9,'5–8 dias úteis'],['Sul',21.9,'5–8 dias úteis'],['Sudeste',14.9,'3–6 dias úteis'],['São Paulo',12.9,'2–5 dias úteis']][+d[0]]||['Sudeste',15.9,'3–6 dias úteis'],free=subtotal>=180;return{name:r[0],value:free?0:r[1],days:r[2],free,label:free?'Frete grátis':`Entrega ${r[0]}`}}
+  window.Mundix={products,getProduct,getColor,stockFor,getInventory,setInventory,getCart,addToCart,updateCartItem,clearCart,cartDetails,cartSubtotal,cartCount,getOrders,saveOrders,createOrder,shippingQuote,price,asset:(c,f)=>c?.hex||f||'#f7dc32',storage};
 })();

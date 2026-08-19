@@ -173,7 +173,7 @@
           <span class="product-category">${product.category}</span><h3>${product.shortName}</h3>
           <p>${product.tagline}</p>
           <div class="tiny-swatches">${colors.map(color => `<i style="--swatch:${Mundix.asset(color)}" title="${color.name}"></i>`).join('')}<span style="font-size:10px;margin-left:3px;color:#777">+${product.colors.length - colors.length}</span></div>
-          <div class="product-bottom"><div class="product-price"><small>a partir de</small><strong>${Mundix.price(product.price)}</strong></div><a class="button small outline" href="${detailUrl}">Ver cores ${icon('arrow')}</a></div>
+          <div class="product-bottom"><div class="product-price"><small>${product.price == null ? 'valor sob consulta' : 'a partir de'}</small><strong>${product.price == null ? 'Consulte o valor' : Mundix.price(product.price)}</strong></div><a class="button small outline" href="${detailUrl}">Ver detalhes ${icon('arrow')}</a></div>
         </div>
       </article>`;
     return `
@@ -182,14 +182,16 @@
         <div class="catalog-copy"><span class="product-category">${product.category}</span><h2>${product.shortName}</h2><p>${product.tagline}</p>
           <div class="info-pills"><span class="info-pill">${product.meterage}</span><span class="info-pill">${product.composition}</span></div>
           <div class="tiny-swatches">${colors.map(color => `<i style="--swatch:${Mundix.asset(color)}" title="${color.name}"></i>`).join('')}<span style="font-size:10px;margin-left:3px;color:#777">+${product.colors.length - colors.length}</span></div>
-          <div class="catalog-footer"><div><strong class="product-price" style="font-size:22px">${Mundix.price(product.price)}</strong><span class="color-count">${product.colors.length} variações</span></div><a class="button outline" href="${detailUrl}">Escolher</a></div>
+          <div class="catalog-footer"><div><strong class="product-price" style="font-size:22px">${product.price == null ? 'Consulte o valor' : Mundix.price(product.price)}</strong><span class="color-count">${product.colors.length} variações</span></div><a class="button outline" href="${detailUrl}">Ver detalhes</a></div>
         </div>
       </article>`;
   }
 
   function renderHomeProducts() {
     const target = $('#homeProducts');
-    if (target) target.innerHTML = Mundix.products.map(product => productCard(product, true)).join('');
+    if (target) target.innerHTML = Mundix.products.slice(0, 4).map(product => productCard(product, true)).join('');
+    const gallery = $('#homeGallery');
+    if (gallery) gallery.innerHTML = Mundix.products.slice(2, 6).map(product => `<a class="insta-tile" href="produtos.html?produto=${product.id}"><img src="${product.image}" alt="${product.name}"><span class="sr-only">Ver ${product.name}</span></a>`).join('');
   }
 
   function renderCatalog() {
@@ -201,7 +203,7 @@
     const selectedUses = $$('[data-filter-use]:checked').map(input => input.value);
     const filtered = Mundix.products.filter(product => {
       const text = `${product.name} ${product.category} ${product.uses.join(' ')} ${product.colors.map(c => c.name).join(' ')}`.toLocaleLowerCase('pt-BR');
-      return (!search || text.includes(search)) && (!selectedTypes.length || selectedTypes.includes(product.id)) && (!selectedUses.length || selectedUses.some(use => product.uses.includes(use)));
+      return (!search || text.includes(search)) && (!selectedTypes.length || selectedTypes.includes(product.category)) && (!selectedUses.length || selectedUses.some(use => product.uses.includes(use)));
     });
     target.innerHTML = filtered.length ? filtered.map(product => productCard(product)).join('') : '<div class="empty-state" style="grid-column:1/-1">Nenhum fio encontrado com estes filtros.<br><button class="filter-clear" data-clear-filters>Limpar filtros</button></div>';
     if (counter) counter.textContent = `${filtered.length} ${filtered.length === 1 ? 'produto encontrado' : 'produtos encontrados'}`;
@@ -312,7 +314,7 @@
         <a class="back-link" href="produtos.html">${icon('back')} Voltar para todos os produtos</a>
         <section class="product-detail">
           <div class="detail-gallery">
-            <div class="detail-image ${product.id}" style="--detail-bg:${product.id === 'fio-malha' ? '#e1f2ed' : '#fff'}">
+            <div class="detail-image ${product.id}" style="--detail-bg:#fff">
               ${product.variantBaseImage
                 ? `<canvas class="detail-product-canvas" data-mesh-canvas role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>`
                 : `<img src="${product.image}" alt="${product.name}">`}
@@ -322,18 +324,18 @@
           <div class="detail-info">
             <span class="product-category">${product.category} · ${product.meterage}</span>
             <h1>${product.name}</h1><p class="detail-description">${product.description}</p>
-            <div class="detail-price-row"><strong>${Mundix.price(product.price)}</strong><span>${Mundix.price(product.pixPrice)} no Pix</span></div>
+            <div class="detail-price-row"><strong>${product.price == null ? 'Consulte o valor' : Mundix.price(product.price)}</strong>${product.price == null ? '<span>Fale conosco para consultar disponibilidade.</span>' : `<span>${Mundix.price(product.pixPrice)} no Pix</span>`}</div>
             <div class="detail-stats"><div class="detail-stat"><span>Composição</span><strong>${product.composition}</strong></div><div class="detail-stat"><span>Peso médio</span><strong>${product.weight}</strong></div><div class="detail-stat"><span>Agulhas</span><strong>${product.needle}</strong></div></div>
             <div class="selector-label"><span>Cor: <b>${selectedColor.name}</b></span>${stockLabel(stock)}</div>
             <div class="color-grid" aria-label="Escolha uma cor">${colorGrid(product, selectedColor)}</div>
-            <div class="quantity-and-add"><div class="quantity-control"><button type="button" data-detail-quantity="-1" aria-label="Diminuir quantidade">−</button><input value="${quantity}" readonly aria-label="Quantidade"><button type="button" data-detail-quantity="1" aria-label="Aumentar quantidade">+</button></div><button class="button yellow add-large" type="button" data-add-detail ${stock === 0 ? 'disabled' : ''}>${stock === 0 ? 'Cor indisponível' : `Adicionar ao carrinho ${icon('cart')}`}</button></div>
+            ${product.price == null ? `<a class="button yellow add-large consult-button" target="_blank" rel="noreferrer" href="https://wa.me/5534998171327?text=${encodeURIComponent(`Olá! Gostaria de consultar ${product.name} na cor ${selectedColor.name}.`)}">Consultar no WhatsApp ${icon('arrow')}</a>` : `<div class="quantity-and-add"><div class="quantity-control"><button type="button" data-detail-quantity="-1" aria-label="Diminuir quantidade">−</button><input value="${quantity}" readonly aria-label="Quantidade"><button type="button" data-detail-quantity="1" aria-label="Aumentar quantidade">+</button></div><button class="button yellow add-large" type="button" data-add-detail ${stock === 0 ? 'disabled' : ''}>${stock === 0 ? 'Cor indisponível' : `Adicionar ao carrinho ${icon('cart')}`}</button></div>`}
             <div class="shipping-note">${icon('truck')}<span><b>Envio para todo o Brasil.</b> Informe seu CEP no checkout para receber uma estimativa de entrega ou escolha retirar na loja em Uberlândia.</span></div>
             <div class="detail-facts">
               <section class="detail-fact"><h2>Destaques do produto</h2><ul>${product.highlights.map(item => `<li>${item}</li>`).join('')}</ul></section>
               <section class="detail-fact"><h2>Ideal para</h2><p>${product.uses.join(' · ')}</p></section>
               <section class="detail-fact"><h2>Sobre as cores</h2><p>As imagens e amostras são referências; pode haver pequenas variações de tonalidade conforme o monitor.</p></section>
             </div>
-            <p class="source-note">Especificações técnicas de referência: <a href="${product.sourceUrl}" target="_blank" rel="noreferrer">${product.sourceName}</a>.</p>
+            <p class="source-note">Especificações técnicas de referência: ${product.sourceUrl ? `<a href="${product.sourceUrl}" target="_blank" rel="noreferrer">${product.sourceName}</a>` : product.sourceName}.</p>
           </div>
         </section>
       </main>`;

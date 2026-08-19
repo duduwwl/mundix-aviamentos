@@ -299,6 +299,38 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .source-note { margin: 12px 0 0; color: #848075; font-size: 9px; }
 .source-note a { text-decoration: underline; }
 
+/* Catálogo ampliado: cada fotografia fica em uma base branca consistente. */
+.feature-product .product-card-art,
+.catalog-image,
+.detail-image,
+.insta-tile,
+.cart-item-art,
+.summary-item-art { background: #fff !important; }
+.feature-product .product-card-art::before,
+.catalog-image::before,
+.detail-image::before,
+.detail-image::after { display: none; }
+.feature-product .product-card-art img,
+.catalog-image img,
+.detail-image > img,
+.insta-tile img { object-fit: contain !important; object-position: center; }
+.feature-product .product-card-art img { padding: 14px; }
+.catalog-image img { padding: 13px; }
+.consult-button { display: flex; width: 100%; min-height: 49px; align-items: center; justify-content: center; margin-top: 28px; }
+.product-price strong { font-size: clamp(17px, 1.7vw, 24px); }
+
+@media (max-width: 640px) {
+  .feature-product .product-card-art { height: 310px; min-height: 310px; }
+  .feature-product .product-card-art img { width: 100%; height: 100%; padding: 12px; }
+  .catalog-image { height: 280px; }
+  .catalog-image img { width: 100%; height: 100%; padding: 15px; }
+}
+
+@media (max-width: 480px) {
+  .feature-product .product-card-art { height: 300px; min-height: 300px; }
+  .catalog-image { height: 270px; }
+}
+
 /* Cart */
 .cart-overlay { position: fixed; z-index: 70; inset: 0; background: rgba(20,20,20,.38); opacity: 0; pointer-events: none; transition: opacity .22s ease; }
 .cart-overlay.visible { opacity: 1; pointer-events: auto; }
