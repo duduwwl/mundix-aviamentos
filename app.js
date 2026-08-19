@@ -163,6 +163,12 @@
     window.__mundixToast = setTimeout(() => element.classList.remove('visible'), 2900);
   }
 
+  function paymentPriceMarkup(product, compact = false) {
+    if (product.price == null) return compact ? '<strong>Consulte o valor</strong>' : '<small>valor sob consulta</small><strong>Consulte o valor</strong>';
+    const installment = Mundix.paymentAmount(product, 'credito') / 12;
+    return `${compact ? '' : '<small>no Pix</small>'}<strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span class="credit-copy">ou em até 12x de ${Mundix.price(installment)} no crédito</span>`;
+  }
+
   function productCard(product, large = false) {
     const colors = product.colors.slice(0, large ? 9 : 6);
     const detailUrl = `produtos.html?produto=${product.id}`;
@@ -173,7 +179,7 @@
           <span class="product-category">${product.category}</span><h3>${product.shortName}</h3>
           <p>${product.tagline}</p>
           <div class="tiny-swatches">${colors.map(color => `<i style="--swatch:${Mundix.asset(color)}" title="${color.name}"></i>`).join('')}<span style="font-size:10px;margin-left:3px;color:#777">+${product.colors.length - colors.length}</span></div>
-          <div class="product-bottom"><div class="product-price"><small>${product.price == null ? 'valor sob consulta' : 'a partir de'}</small><strong>${product.price == null ? 'Consulte o valor' : Mundix.price(product.price)}</strong></div><a class="button small outline" href="${detailUrl}">Ver detalhes ${icon('arrow')}</a></div>
+          <div class="product-bottom"><div class="product-price">${paymentPriceMarkup(product)}</div><a class="button small outline" href="${detailUrl}">Ver detalhes ${icon('arrow')}</a></div>
         </div>
       </article>`;
     return `
@@ -182,7 +188,7 @@
         <div class="catalog-copy"><span class="product-category">${product.category}</span><h2>${product.shortName}</h2><p>${product.tagline}</p>
           <div class="info-pills"><span class="info-pill">${product.meterage}</span><span class="info-pill">${product.composition}</span></div>
           <div class="tiny-swatches">${colors.map(color => `<i style="--swatch:${Mundix.asset(color)}" title="${color.name}"></i>`).join('')}<span style="font-size:10px;margin-left:3px;color:#777">+${product.colors.length - colors.length}</span></div>
-          <div class="catalog-footer"><div><strong class="product-price" style="font-size:22px">${product.price == null ? 'Consulte o valor' : Mundix.price(product.price)}</strong><span class="color-count">${product.colors.length} variações</span></div><a class="button outline" href="${detailUrl}">Ver detalhes</a></div>
+          <div class="catalog-footer"><div class="catalog-price">${paymentPriceMarkup(product, true)}<span class="color-count">${product.colors.length} variações</span></div><a class="button outline" href="${detailUrl}">Ver detalhes</a></div>
         </div>
       </article>`;
   }
@@ -350,7 +356,7 @@
           <div class="detail-info">
             <span class="product-category">${product.category} · ${product.meterage}</span>
             <h1>${product.name}</h1><p class="detail-description">${product.description}</p>
-            <div class="detail-price-row"><strong>${product.price == null ? 'Consulte o valor' : Mundix.price(product.price)}</strong>${product.price == null ? '<span>Fale conosco para consultar disponibilidade.</span>' : `<span>${Mundix.price(product.pixPrice)} no Pix</span>`}</div>
+            <div class="detail-price-row">${product.price == null ? '<strong>Consulte o valor</strong><span>Fale conosco para consultar disponibilidade.</span>' : `<div><strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span>no Pix</span><p>ou em até 12x no crédito por apenas <b>${Mundix.price(Mundix.paymentAmount(product, 'credito') / 12)}</b></p></div>`}</div>
             <div class="detail-stats"><div class="detail-stat"><span>Composição</span><strong>${product.composition}</strong></div><div class="detail-stat"><span>Peso médio</span><strong>${product.weight}</strong></div><div class="detail-stat"><span>Agulhas</span><strong>${product.needle}</strong></div></div>
             <div class="selector-label"><span>Cor: <b>${selectedColor.name}</b></span>${stockLabel(stock)}</div>
             <div class="color-grid" aria-label="Escolha uma cor">${colorGrid(product, selectedColor)}</div>
@@ -387,14 +393,15 @@
     const target = $('#checkoutSummary');
     if (!target) return;
     const items = Mundix.cartDetails();
-    const subtotal = Mundix.cartSubtotal();
+    const method = $('#checkoutForm input[name="payment"]:checked')?.value || 'pix';
+    const subtotal = Mundix.cartSubtotal(method);
     const shippingValue = typeof shipping === 'number' ? shipping : Number(target.dataset.shipping || 0);
     target.dataset.shipping = shippingValue;
     target.innerHTML = `
       <h2>Resumo do pedido</h2>
-      <div class="summary-items">${items.length ? items.map(item => `<div class="summary-item"><div class="summary-item-art" style="--summary-bg:${Mundix.asset(item.color)}"><img src="${item.product.image}" alt=""></div><div><strong>${item.product.shortName}</strong><span>${item.color.name} · qtd. ${item.quantity}</span></div><b>${Mundix.price(item.product.price * item.quantity)}</b></div>`).join('') : '<div class="admin-empty">Seu carrinho está vazio.</div>'}</div>
+      <div class="summary-items">${items.length ? items.map(item => `<div class="summary-item"><div class="summary-item-art" style="--summary-bg:${Mundix.asset(item.color)}"><img src="${item.product.image}" alt=""></div><div><strong>${item.product.shortName}</strong><span>${item.color.name} · qtd. ${item.quantity}</span></div><b>${Mundix.price(Mundix.paymentAmount(item.product, method) * item.quantity)}</b></div>`).join('') : '<div class="admin-empty">Seu carrinho está vazio.</div>'}</div>
       <div class="summary-rows"><div class="summary-row"><span>Produtos</span><strong>${Mundix.price(subtotal)}</strong></div><div class="summary-row"><span>Entrega</span><strong>${shippingValue ? Mundix.price(shippingValue) : 'A calcular'}</strong></div></div>
-      <div class="summary-total"><span>Total</span><strong>${Mundix.price(subtotal + shippingValue)}</strong></div>
+      <div class="summary-total"><span>Total (${({pix:'Pix',debito:'débito',credito:'crédito'})[method]})</span><strong>${Mundix.price(subtotal + shippingValue)}</strong></div>
       ${items.length ? '<button class="button yellow" type="submit" form="checkoutForm">Confirmar pedido ' + icon('arrow') + '</button>' : '<a class="button yellow" href="produtos.html">Ver produtos ' + icon('arrow') + '</a>'}
       <p class="checkout-note">Ambiente demonstrativo. Não insira dados de cartão reais.</p>`;
   }
@@ -435,6 +442,7 @@
     $$('input[name="payment"]', form).forEach(input => input.addEventListener('change', () => {
       $$('.payment-detail').forEach(detail => detail.classList.remove('visible'));
       $(`#payment-${input.value}`)?.classList.add('visible');
+      updateCheckoutSummary();
     }));
     form.addEventListener('submit', event => {
       event.preventDefault();

@@ -167,6 +167,9 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .product-price { display: flex; flex-direction: column; gap: 2px; }
 .product-price small { color: var(--muted); font-size: 10px; font-weight: 700; }
 .product-price strong { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; letter-spacing: -.05em; }
+.product-price .credit-copy, .catalog-price .credit-copy { color: var(--muted); font-size: 9px; font-weight: 700; line-height: 1.25; max-width: 165px; }
+.catalog-price { display:flex; flex-direction:column; gap:2px; }
+.catalog-price strong { font-family: 'Bricolage Grotesque', sans-serif; font-size:22px; letter-spacing:-.05em; }
 .tiny-swatches { display: flex; gap: 4px; margin: 17px 0; }
 .tiny-swatches i { display: block; width: 14px; height: 14px; border: 1px solid rgba(20,20,20,.15); border-radius: 50%; background: var(--swatch); }
 
@@ -269,6 +272,9 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .detail-price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin: 24px 0 18px; }
 .detail-price-row strong { font-family: 'Bricolage Grotesque', sans-serif; font-size: 35px; letter-spacing: -.06em; }
 .detail-price-row span { color: #6d641b; font-size: 11px; font-weight: 800; }
+.detail-price-row > div { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; }
+.detail-price-row p { flex-basis:100%; margin:0; color:var(--muted); font-size:12px; font-weight:600; }
+.detail-price-row p b { color:var(--ink); }
 .detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); margin: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .detail-stat { padding: 12px 8px 12px 0; border-right: 1px solid var(--line); }
 .detail-stat:not(:first-child) { padding-left: 14px; }
