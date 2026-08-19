@@ -357,8 +357,9 @@
         // Mantém fundo branco/sombra neutra e a etiqueta da embalagem intactos.
         const isBackground = (minimum > 238 && maximum - minimum < 24) || (minimum > 182 && maximum - minimum < 12);
         const isCentralLabel = horizontal > labelLeft && horizontal < labelRight && vertical > labelTop && vertical < labelBottom;
-        const isNeutralDarkText = maximum < 88 && maximum - minimum < 26;
-        if (isBackground || isCentralLabel || isNeutralDarkText) continue;
+        // A etiqueta já está protegida pela máscara. Não ignoramos tons escuros
+        // aqui, pois eles podem ser parte do próprio fio e precisam mudar junto.
+        if (isBackground || isCentralLabel) continue;
         const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
         const texture = Math.min(1, .30 + luminance * .76);
         data[index] = Math.round(target.r * texture);
