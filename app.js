@@ -323,9 +323,11 @@
         const horizontal = x / canvas.width, vertical = y / canvas.height;
         const r = data[index], g = data[index + 1], b = data[index + 2];
         const maximum = Math.max(r, g, b), minimum = Math.min(r, g, b);
-        const isBackground = minimum > 238 && maximum - minimum < 18;
-        const yarnZone = vertical < .36 || vertical > .68 || horizontal < .17 || horizontal > .83;
-        if (isBackground || !yarnZone) continue;
+        // Colore a massa do novelo inteira; mantém áreas brancas/neutras da etiqueta legíveis.
+        const isBackground = minimum > 242 && maximum - minimum < 20;
+        const isLightLabel = horizontal > .13 && horizontal < .87 && vertical > .25 && vertical < .75 && minimum > 168 && maximum - minimum < 42;
+        const isNeutralDarkText = maximum < 88 && maximum - minimum < 26;
+        if (isBackground || isLightLabel || isNeutralDarkText) continue;
         const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
         const texture = Math.min(1, .34 + luminance * .72);
         data[index] = Math.round(target.r * texture);
