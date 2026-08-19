@@ -168,6 +168,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .product-price small { color: var(--muted); font-size: 10px; font-weight: 700; }
 .product-price strong { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; letter-spacing: -.05em; }
 .product-price .credit-copy, .catalog-price .credit-copy { color: var(--muted); font-size: 9px; font-weight: 700; line-height: 1.25; max-width: 165px; }
+.product-price .credit-copy b, .catalog-price .credit-copy b { color: var(--ink); font-weight: 800; }
 .catalog-price { display:flex; flex-direction:column; gap:2px; }
 .catalog-price strong { font-family: 'Bricolage Grotesque', sans-serif; font-size:22px; letter-spacing:-.05em; }
 .tiny-swatches { display: flex; gap: 4px; margin: 17px 0; }
@@ -275,6 +276,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .detail-price-row > div { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; }
 .detail-price-row p { flex-basis:100%; margin:0; color:var(--muted); font-size:12px; font-weight:600; }
 .detail-price-row p b { color:var(--ink); }
+.detail-price-row p small { color:var(--muted); font-size:10px; }
 .detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); margin: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .detail-stat { padding: 12px 8px 12px 0; border-right: 1px solid var(--line); }
 .detail-stat:not(:first-child) { padding-left: 14px; }
@@ -328,12 +330,12 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 
 /* Fotos especiais: apenas o novelo principal e sem sombra adicional. */
 img[src*="meliah-unique-classique-"] {
-  clip-path: inset(0 20% 0 0);
-  transform: translateX(10%);
+  clip-path: inset(0 28% 0 0);
+  transform: translateX(14%);
 }
 .catalog-image img[src*="meliah-unique-classique-"] {
-  width: 82% !important;
-  height: 82%;
+  width: 94% !important;
+  height: 90%;
 }
 img[src*="fischer-glow"] { filter: none !important; }
 .consult-button { display: flex; width: 100%; min-height: 49px; align-items: center; justify-content: center; margin-top: 28px; }

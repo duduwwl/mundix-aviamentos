@@ -165,8 +165,9 @@
 
   function paymentPriceMarkup(product, compact = false) {
     if (product.price == null) return compact ? '<strong>Consulte o valor</strong>' : '<small>valor sob consulta</small><strong>Consulte o valor</strong>';
-    const installment = Mundix.paymentAmount(product, 'credito') / 12;
-    return `${compact ? '' : '<small>no Pix</small>'}<strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span class="credit-copy">ou em até 12x de ${Mundix.price(installment)} no crédito</span>`;
+    const creditTotal = Mundix.paymentAmount(product, 'credito');
+    const installment = creditTotal / 4;
+    return `${compact ? '' : '<small>no Pix</small>'}<strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span class="credit-copy">ou em até 4x de ${Mundix.price(installment)} no crédito<br><b>Total no crédito: ${Mundix.price(creditTotal)}</b></span>`;
   }
 
   function productCard(product, large = false) {
@@ -325,9 +326,10 @@
         const maximum = Math.max(r, g, b), minimum = Math.min(r, g, b);
         // Colore a massa do novelo inteira; mantém áreas brancas/neutras da etiqueta legíveis.
         const isBackground = minimum > 242 && maximum - minimum < 20;
-        const isLightLabel = horizontal > .13 && horizontal < .87 && vertical > .25 && vertical < .75 && minimum > 168 && maximum - minimum < 42;
+        // A faixa central costuma ser a etiqueta. Ela fica intacta como nos dois produtos originais.
+        const isCentralLabel = horizontal > .13 && horizontal < .87 && vertical > .30 && vertical < .70;
         const isNeutralDarkText = maximum < 88 && maximum - minimum < 26;
-        if (isBackground || isLightLabel || isNeutralDarkText) continue;
+        if (isBackground || isCentralLabel || isNeutralDarkText) continue;
         const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
         const texture = Math.min(1, .34 + luminance * .72);
         data[index] = Math.round(target.r * texture);
@@ -358,7 +360,7 @@
           <div class="detail-info">
             <span class="product-category">${product.category} · ${product.meterage}</span>
             <h1>${product.name}</h1><p class="detail-description">${product.description}</p>
-            <div class="detail-price-row">${product.price == null ? '<strong>Consulte o valor</strong><span>Fale conosco para consultar disponibilidade.</span>' : `<div><strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span>no Pix</span><p>ou em até 12x no crédito por apenas <b>${Mundix.price(Mundix.paymentAmount(product, 'credito') / 12)}</b></p></div>`}</div>
+            <div class="detail-price-row">${product.price == null ? '<strong>Consulte o valor</strong><span>Fale conosco para consultar disponibilidade.</span>' : `<div><strong>${Mundix.price(Mundix.paymentAmount(product, 'pix'))}</strong><span>no Pix</span><p>ou então em até 4x no crédito por apenas <b>${Mundix.price(Mundix.paymentAmount(product, 'credito') / 4)}</b> <small>(total no crédito: ${Mundix.price(Mundix.paymentAmount(product, 'credito'))})</small></p></div>`}</div>
             <div class="detail-stats"><div class="detail-stat"><span>Composição</span><strong>${product.composition}</strong></div><div class="detail-stat"><span>Peso médio</span><strong>${product.weight}</strong></div><div class="detail-stat"><span>Agulhas</span><strong>${product.needle}</strong></div></div>
             <div class="selector-label"><span>Cor: <b>${selectedColor.name}</b></span>${stockLabel(stock)}</div>
             <div class="color-grid" aria-label="Escolha uma cor">${colorGrid(product, selectedColor)}</div>
