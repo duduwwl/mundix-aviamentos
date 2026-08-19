@@ -318,7 +318,7 @@
     photo.src = isUnicorn ? unicornSource : source;
   }
 
-  function paintGenericColor(canvas, color, source) {
+  function paintGenericColor(canvas, color, source, productId) {
     if (!canvas) return;
     const photo = new Image();
     photo.onload = () => {
@@ -326,20 +326,41 @@
       canvas.width = photo.naturalWidth; canvas.height = photo.naturalHeight;
       context.drawImage(photo, 0, 0);
       const target = hexToRgb(color.hex);
+      // Cada embalagem tem uma etiqueta em uma posição diferente. Preservamos a
+      // etiqueta e aplicamos a cor somente no fio para não criar faixas coloridas.
+      const labelMasks = {
+        'amigurumi-chenille': [.14, .86, .16, .84],
+        anne: [.15, .85, .33, .69],
+        'barroco-maxcolor': [.12, .88, .30, .70],
+        charme: [.12, .88, .32, .70],
+        'clea-duplo': [.16, .84, .28, .72],
+        duna: [.08, .92, .28, .72],
+        'clea-1000': [.15, .85, .31, .70],
+        encanto: [.05, .95, .27, .73],
+        'meliah-premium-35': [.12, .88, .45, .88],
+        'meliah-lux': [.18, .82, .30, .73],
+        'nautico-polipropileno': [.08, .92, .08, .92],
+        'unique-3': [.14, .86, .25, .77],
+        'unique-5': [.14, .86, .25, .77],
+        'unique-8': [.14, .86, .25, .77],
+        'fischer-glow': [.10, .90, .27, .75],
+        'meliah-pop': [.17, .83, .28, .74],
+        policromia: [.05, .62, .37, .67]
+      };
+      const [labelLeft, labelRight, labelTop, labelBottom] = labelMasks[productId] || [.16, .84, .28, .72];
       const pixels = context.getImageData(0, 0, canvas.width, canvas.height), data = pixels.data;
       for (let index = 0; index < data.length; index += 4) {
         const x = (index / 4) % canvas.width, y = Math.floor((index / 4) / canvas.width);
         const horizontal = x / canvas.width, vertical = y / canvas.height;
         const r = data[index], g = data[index + 1], b = data[index + 2];
         const maximum = Math.max(r, g, b), minimum = Math.min(r, g, b);
-        // Colore a massa do novelo inteira; mantém áreas brancas/neutras da etiqueta legíveis.
-        const isBackground = minimum > 242 && maximum - minimum < 20;
-        // A faixa central costuma ser a etiqueta. Ela fica intacta como nos dois produtos originais.
-        const isCentralLabel = horizontal > .13 && horizontal < .87 && vertical > .30 && vertical < .70;
+        // Mantém fundo branco/sombra neutra e a etiqueta da embalagem intactos.
+        const isBackground = (minimum > 238 && maximum - minimum < 24) || (minimum > 182 && maximum - minimum < 12);
+        const isCentralLabel = horizontal > labelLeft && horizontal < labelRight && vertical > labelTop && vertical < labelBottom;
         const isNeutralDarkText = maximum < 88 && maximum - minimum < 26;
         if (isBackground || isCentralLabel || isNeutralDarkText) continue;
         const luminance = (r * .2126 + g * .7152 + b * .0722) / 255;
-        const texture = Math.min(1, .34 + luminance * .72);
+        const texture = Math.min(1, .30 + luminance * .76);
         data[index] = Math.round(target.r * texture);
         data[index + 1] = Math.round(target.g * texture);
         data[index + 2] = Math.round(target.b * texture);
@@ -385,7 +406,7 @@
       </main>`;
     if (product.id === 'fio-malha') paintMeshColor($('[data-mesh-canvas]', target), selectedColor, product.variantBaseImage);
     if (product.id === 'amigurumi') paintAmigurumiColor($('[data-mesh-canvas]', target), selectedColor, product.variantBaseImage, product.image);
-    if (!['fio-malha', 'amigurumi'].includes(product.id)) paintGenericColor($('[data-mesh-canvas]', target), selectedColor, product.image);
+    if (!['fio-malha', 'amigurumi'].includes(product.id)) paintGenericColor($('[data-mesh-canvas]', target), selectedColor, product.image, product.id);
     $$('[data-select-color]', target).forEach(button => button.addEventListener('click', () => renderDetail(productId, button.dataset.selectColor, quantity)));
     $$('[data-detail-quantity]', target).forEach(button => button.addEventListener('click', () => renderDetail(productId, selectedColor.id, Math.max(1, Math.min(stock || 1, quantity + Number(button.dataset.detailQuantity))))));
     $('[data-add-detail]', target)?.addEventListener('click', () => {
