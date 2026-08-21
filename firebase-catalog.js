@@ -2,7 +2,7 @@
 (function () {
   const PROJECT_ID = 'mundix';
   const API_KEY = 'AIzaSyCZxFIpb91Dy_Y3uDeb0SyA3DLJ4jhkk9w';
-  const CACHE_KEY = 'mundix-products-cache-v1';
+  const CACHE_KEY = 'mundix-products-cache-v2';
   const CACHE_TIME = 30 * 60 * 1000;
   const paymentRates = { pix: .0049, debito: .0199, credito: .0498 };
   const storage = {
