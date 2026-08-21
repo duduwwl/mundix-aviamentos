@@ -11,6 +11,9 @@
     'unique-8': ['unique-8', 'png']
   };
   const unavailableVariants = new Set(['unique-3|unique3-outono', 'unique-8|unique8-cookie']);
+  const preferredCatalogPhotos = {
+    'meliah-premium-35': 'premium35-rosa-bebe'
+  };
 
   function attachExactVariantPhotos(catalog) {
     catalog.products.forEach(product => {
@@ -20,6 +23,8 @@
       product.colors = product.colors
         .filter(color => !unavailableVariants.has(`${product.id}|${color.id}`))
         .map(color => ({ ...color, image: `assets/variants/${folder}/${color.id}.${extension}` }));
+      const preferred = product.colors.find(color => color.id === preferredCatalogPhotos[product.id]);
+      if (preferred) product.image = preferred.image;
     });
     return catalog;
   }
