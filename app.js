@@ -370,6 +370,7 @@
   }
 
   async function variantImage(product, color) {
+    if (color.image) return color.image;
     const cacheKey = `${product.id}|${color.id}|${product.variantBaseImage || product.image}`;
     if (!variantImageCache.has(cacheKey)) {
       variantImageCache.set(cacheKey, (async () => {
