@@ -84,7 +84,7 @@
             <a class="brand" href="index.html"><img class="brand-logo" src="assets/mundix-logo.png" alt="Logo Mundix"><span class="brand-wordmark"><strong>Mundix</strong><small>aviamentos</small></span></a>
             <p>Tudo para o seu artesanato: cores, texturas e qualidade para transformar cada ideia em uma peça única.</p>
           </div>
-          <div><div class="footer-title">Navegue</div><div class="footer-links"><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="checkout.html">Finalizar compra</a><a href="admin.html">Área da loja</a></div></div>
+          <div><div class="footer-title">Navegue</div><div class="footer-links"><a href="index.html">Início</a><a href="produtos.html">Produtos</a><a href="checkout.html">Finalizar compra</a></div></div>
           <div><div class="footer-title">Atendimento</div><div class="footer-contact"><strong>(34) 3215-8784</strong><a href="https://wa.me/5534998171327" target="_blank" rel="noreferrer">WhatsApp: (34) 99817-1327</a><span>Seg–sex: 9h–18h<br>Sáb: 9h–13h</span></div></div>
           <div><div class="footer-title">Retire na loja</div><div class="footer-contact"><strong>Uberlândia, MG</strong><span>Rua Antônio Salviano de Rezende, 639<br>(Antiga 19) · 38408-228</span><a href="https://www.instagram.com/mundix_aviamentos" target="_blank" rel="noreferrer">@mundix_aviamentos</a></div></div>
         </div>
@@ -133,13 +133,14 @@
     }
     target.innerHTML = items.map(item => `
       <article class="cart-item">
-        <div class="cart-item-art" style="--cart-tint:${Mundix.asset(item.color, '#f0e467')}"><img src="${item.product.image}" alt="${item.product.shortName}"></div>
+        <div class="cart-item-art" style="--cart-tint:${Mundix.asset(item.color, '#f0e467')}"><canvas class="variant-product-canvas" data-variant-product="${item.product.id}" data-variant-color="${item.color.id}" role="img" aria-label="${item.product.shortName} na cor ${item.color.name}"></canvas></div>
         <div class="cart-item-info"><strong>${item.product.shortName}</strong><span><i class="cart-color-dot" style="--cart-color:${Mundix.asset(item.color)}"></i>${item.color.name}</span>
           <div class="quantity-control"><button type="button" data-cart-change="-1" data-product="${item.product.id}" data-color="${item.color.id}" aria-label="Diminuir quantidade">−</button><input value="${item.quantity}" readonly aria-label="Quantidade"><button type="button" data-cart-change="1" data-product="${item.product.id}" data-color="${item.color.id}" aria-label="Aumentar quantidade">+</button></div>
         </div>
         <div class="cart-item-price"><strong>${Mundix.price(item.product.price * item.quantity)}</strong><button class="remove-item" type="button" data-cart-remove data-product="${item.product.id}" data-color="${item.color.id}">remover</button></div>
       </article>`).join('');
     foot.innerHTML = `<div class="cart-total"><span>Subtotal</span><strong>${Mundix.price(Mundix.cartSubtotal())}</strong></div><a class="button yellow" href="checkout.html">Ir para o checkout ${icon('arrow')}</a>`;
+    hydrateVariantCanvases(target);
     $$('[data-cart-change]', target).forEach(button => button.addEventListener('click', () => {
       const current = Mundix.getCart().find(item => item.productId === button.dataset.product && item.colorId === button.dataset.color)?.quantity || 1;
       Mundix.updateCartItem(button.dataset.product, button.dataset.color, current + Number(button.dataset.cartChange));
@@ -250,15 +251,24 @@
     return { r: parseInt(value.slice(0, 2), 16), g: parseInt(value.slice(2, 4), 16), b: parseInt(value.slice(4, 6), 16) };
   }
 
-  function paintMeshColor(canvas, color, source) {
-    if (!canvas) return;
-    const photo = new Image();
-    photo.onload = () => {
+  const variantImageCache = new Map();
+  const variantColorKey = name => String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+
+  function loadPhoto(source) {
+    return new Promise((resolve, reject) => {
+      const photo = new Image();
+      photo.onload = () => resolve(photo);
+      photo.onerror = reject;
+      photo.src = source;
+    });
+  }
+
+  function paintMeshColor(canvas, color, photo) {
       const context = canvas.getContext('2d', { willReadFrequently: true });
       canvas.width = photo.naturalWidth;
       canvas.height = photo.naturalHeight;
       context.drawImage(photo, 0, 0);
-      if (color.id === 'azul-bondi') return;
+      if (variantColorKey(color.name) === 'azulbondi') return;
       const target = hexToRgb(color.hex);
       const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
       const data = pixels.data;
@@ -283,15 +293,10 @@
         data[index + 2] = Math.round(target.b * texture);
       }
       context.putImageData(pixels, 0, 0);
-    };
-    photo.src = source;
   }
 
-  function paintAmigurumiColor(canvas, color, source, unicornSource) {
-    if (!canvas) return;
-    const photo = new Image();
-    const isUnicorn = color.id === 'unicornio';
-    photo.onload = () => {
+  function paintAmigurumiColor(canvas, color, photo) {
+    const isUnicorn = variantColorKey(color.name) === 'unicornio';
       const context = canvas.getContext('2d', { willReadFrequently: true });
       canvas.width = photo.naturalWidth;
       canvas.height = photo.naturalHeight;
@@ -314,14 +319,9 @@
         data[index + 2] = Math.round(target.b * texture);
       }
       context.putImageData(pixels, 0, 0);
-    };
-    photo.src = isUnicorn ? unicornSource : source;
   }
 
-  function paintGenericColor(canvas, color, source, productId) {
-    if (!canvas) return;
-    const photo = new Image();
-    photo.onload = () => {
+  function paintGenericColor(canvas, color, photo, productId) {
       const context = canvas.getContext('2d', { willReadFrequently: true });
       canvas.width = photo.naturalWidth; canvas.height = photo.naturalHeight;
       context.drawImage(photo, 0, 0);
@@ -367,8 +367,48 @@
         data[index + 2] = Math.round(target.b * texture);
       }
       context.putImageData(pixels, 0, 0);
-    };
-    photo.src = source;
+  }
+
+  async function variantImage(product, color) {
+    const cacheKey = `${product.id}|${color.id}|${product.variantBaseImage || product.image}`;
+    if (!variantImageCache.has(cacheKey)) {
+      variantImageCache.set(cacheKey, (async () => {
+        const canvas = document.createElement('canvas');
+        const isAmigurumiUnicorn = product.id === 'amigurumi' && variantColorKey(color.name) === 'unicornio';
+        const source = isAmigurumiUnicorn ? product.image : (product.variantBaseImage || product.image);
+        const photo = await loadPhoto(source);
+        if (product.id === 'fio-malha') paintMeshColor(canvas, color, photo);
+        else if (product.id === 'amigurumi') paintAmigurumiColor(canvas, color, photo);
+        else paintGenericColor(canvas, color, photo, product.id);
+        return canvas.toDataURL('image/webp', .9);
+      })().catch(() => product.image));
+    }
+    return variantImageCache.get(cacheKey);
+  }
+
+  async function renderVariantCanvas(canvas, product, color) {
+    if (!canvas || !product || !color) return;
+    const requestKey = `${product.id}|${color.id}`;
+    canvas.dataset.variantRequest = requestKey;
+    canvas.setAttribute('aria-label', `${product.name} na cor ${color.name}`);
+    const source = await variantImage(product, color);
+    if (!canvas.isConnected || canvas.dataset.variantRequest !== requestKey) return;
+    const photo = await loadPhoto(source).catch(() => null);
+    if (!photo || !canvas.isConnected || canvas.dataset.variantRequest !== requestKey) return;
+    const context = canvas.getContext('2d');
+    canvas.width = photo.naturalWidth;
+    canvas.height = photo.naturalHeight;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(photo, 0, 0);
+    canvas.classList.add('ready');
+  }
+
+  function hydrateVariantCanvases(root = document) {
+    $$('[data-variant-product][data-variant-color]', root).forEach(canvas => {
+      const product = Mundix.getProduct(canvas.dataset.variantProduct);
+      const color = Mundix.getColor(canvas.dataset.variantProduct, canvas.dataset.variantColor);
+      renderVariantCanvas(canvas, product, color);
+    });
   }
 
   function renderDetail(productId, selectedColorId, quantity = 1) {
@@ -383,7 +423,7 @@
         <section class="product-detail">
           <div class="detail-gallery">
             <div class="detail-image ${product.id}" style="--detail-bg:#fff">
-              <canvas class="detail-product-canvas" data-mesh-canvas role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>
+              <canvas class="detail-product-canvas" data-variant-product="${product.id}" data-variant-color="${selectedColor.id}" role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>
               <span class="color-image-label">${stock === 0 ? `Esgotado · ${selectedColor.name}` : `Cor selecionada: ${selectedColor.name}`}</span>
               ${stock === 0 ? '<span class="sold-out-stamp" aria-label="Cor esgotada">Esgotado</span>' : ''}
             </div>
@@ -406,9 +446,7 @@
           </div>
         </section>
       </main>`;
-    if (product.id === 'fio-malha') paintMeshColor($('[data-mesh-canvas]', target), selectedColor, product.variantBaseImage);
-    if (product.id === 'amigurumi') paintAmigurumiColor($('[data-mesh-canvas]', target), selectedColor, product.variantBaseImage, product.image);
-    if (!['fio-malha', 'amigurumi'].includes(product.id)) paintGenericColor($('[data-mesh-canvas]', target), selectedColor, product.image, product.id);
+    hydrateVariantCanvases(target);
     $$('[data-select-color]', target).forEach(button => button.addEventListener('click', () => renderDetail(productId, button.dataset.selectColor, quantity)));
     $$('[data-detail-quantity]', target).forEach(button => button.addEventListener('click', () => renderDetail(productId, selectedColor.id, Math.max(1, Math.min(stock || 1, quantity + Number(button.dataset.detailQuantity))))));
     $('[data-add-detail]', target)?.addEventListener('click', () => {
@@ -434,11 +472,12 @@
     target.dataset.shipping = shippingValue;
     target.innerHTML = `
       <h2>Resumo do pedido</h2>
-      <div class="summary-items">${items.length ? items.map(item => `<div class="summary-item"><div class="summary-item-art" style="--summary-bg:${Mundix.asset(item.color)}"><img src="${item.product.image}" alt=""></div><div><strong>${item.product.shortName}</strong><span>${item.color.name} · qtd. ${item.quantity}</span></div><b>${Mundix.price(Mundix.paymentAmount(item.product, method) * item.quantity)}</b></div>`).join('') : '<div class="admin-empty">Seu carrinho está vazio.</div>'}</div>
+      <div class="summary-items">${items.length ? items.map(item => `<div class="summary-item"><div class="summary-item-art" style="--summary-bg:${Mundix.asset(item.color)}"><canvas class="variant-product-canvas" data-variant-product="${item.product.id}" data-variant-color="${item.color.id}" role="img" aria-label="${item.product.shortName} na cor ${item.color.name}"></canvas></div><div><strong>${item.product.shortName}</strong><span>${item.color.name} · qtd. ${item.quantity}</span></div><b>${Mundix.price(Mundix.paymentAmount(item.product, method) * item.quantity)}</b></div>`).join('') : '<div class="admin-empty">Seu carrinho está vazio.</div>'}</div>
       <div class="summary-rows"><div class="summary-row"><span>Produtos</span><strong>${Mundix.price(subtotal)}</strong></div><div class="summary-row"><span>Entrega</span><strong>${shippingValue ? Mundix.price(shippingValue) : 'A calcular'}</strong></div></div>
       <div class="summary-total"><span>Total (${({pix:'Pix',debito:'débito',credito:'crédito'})[method]})</span><strong>${Mundix.price(subtotal + shippingValue)}</strong></div>
       ${items.length ? '<button class="button yellow" type="submit" form="checkoutForm">Confirmar pedido ' + icon('arrow') + '</button>' : '<a class="button yellow" href="produtos.html">Ver produtos ' + icon('arrow') + '</a>'}
       <p class="checkout-note">Ambiente demonstrativo. Não insira dados de cartão reais.</p>`;
+    hydrateVariantCanvases(target);
   }
 
   function formatCep(value) { const digits = value.replace(/\D/g, '').slice(0, 8); return digits.replace(/(\d{5})(\d)/, '$1-$2'); }
@@ -522,5 +561,8 @@
   }
 
   window.MundixUI = { icon, toast, updateCheckoutSummary, renderCart, productCard };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+  const start = () => Promise.resolve(window.MundixReady).then(run).catch(() => {
+    document.body.insertAdjacentHTML('afterbegin', '<div class="catalog-load-error">Não foi possível carregar o catálogo. Verifique sua conexão e tente novamente.</div>');
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
