@@ -133,7 +133,7 @@
     }
     target.innerHTML = items.map(item => `
       <article class="cart-item">
-        <div class="cart-item-art" style="--cart-tint:${Mundix.asset(item.color, '#f0e467')}"><canvas class="variant-product-canvas" data-variant-product="${item.product.id}" data-variant-color="${item.color.id}" role="img" aria-label="${item.product.shortName} na cor ${item.color.name}"></canvas></div>
+        <div class="cart-item-art" style="--cart-tint:${Mundix.asset(item.color, '#f0e467')}"><img class="variant-product-canvas" data-variant-product="${item.product.id}" data-variant-color="${item.color.id}" alt="${item.product.shortName} na cor ${item.color.name}"></div>
         <div class="cart-item-info"><strong>${item.product.shortName}</strong><span><i class="cart-color-dot" style="--cart-color:${Mundix.asset(item.color)}"></i>${item.color.name}</span>
           <div class="quantity-control"><button type="button" data-cart-change="-1" data-product="${item.product.id}" data-color="${item.color.id}" aria-label="Diminuir quantidade">−</button><input value="${item.quantity}" readonly aria-label="Quantidade"><button type="button" data-cart-change="1" data-product="${item.product.id}" data-color="${item.color.id}" aria-label="Aumentar quantidade">+</button></div>
         </div>
@@ -394,6 +394,11 @@
     canvas.setAttribute('aria-label', `${product.name} na cor ${color.name}`);
     const source = await variantImage(product, color);
     if (!canvas.isConnected || canvas.dataset.variantRequest !== requestKey) return;
+    if (canvas.tagName === 'IMG') {
+      canvas.src = source;
+      canvas.classList.add('ready');
+      return;
+    }
     const photo = await loadPhoto(source).catch(() => null);
     if (!photo || !canvas.isConnected || canvas.dataset.variantRequest !== requestKey) return;
     const context = canvas.getContext('2d');
@@ -423,8 +428,8 @@
         <a class="back-link" href="produtos.html">${icon('back')} Voltar para todos os produtos</a>
         <section class="product-detail">
           <div class="detail-gallery">
-            <div class="detail-image ${product.id}" style="--detail-bg:#fff">
-              <canvas class="detail-product-canvas" data-variant-product="${product.id}" data-variant-color="${selectedColor.id}" role="img" aria-label="${product.name} na cor ${selectedColor.name}"></canvas>
+            <div class="detail-image ${product.id}">
+              <img class="detail-product-canvas" data-variant-product="${product.id}" data-variant-color="${selectedColor.id}" alt="${product.name} na cor ${selectedColor.name}">
               <span class="color-image-label">${stock === 0 ? `Esgotado · ${selectedColor.name}` : `Cor selecionada: ${selectedColor.name}`}</span>
               ${stock === 0 ? '<span class="sold-out-stamp" aria-label="Cor esgotada">Esgotado</span>' : ''}
             </div>
@@ -473,7 +478,7 @@
     target.dataset.shipping = shippingValue;
     target.innerHTML = `
       <h2>Resumo do pedido</h2>
-      <div class="summary-items">${items.length ? items.map(item => `<div class="summary-item"><div class="summary-item-art" style="--summary-bg:${Mundix.asset(item.color)}"><canvas class="variant-product-canvas" data-variant-product="${item.product.id}" data-variant-color="${item.color.id}" role="img" aria-label="${item.product.shortName} na cor ${item.color.name}"></canvas></div><div><strong>${item.product.shortName}</strong><span>${item.color.name} · qtd. ${item.quantity}</span></div><b>${Mundix.price(Mundix.paymentAmount(item.product, method) * item.quantity)}</b></div>`).join('') : '<div class="admin-empty">Seu carrinho está vazio.</div>'}</div>
+      <div class="summary-items">${items.length ? items.map(item => `<div class="summary-item"><div class="summary-item-art" style="--summary-bg:${Mundix.asset(item.color)}"><img class="variant-product-canvas" data-variant-product="${item.product.id}" data-variant-color="${item.color.id}" alt="${item.product.shortName} na cor ${item.color.name}"></div><div><strong>${item.product.shortName}</strong><span>${item.color.name} · qtd. ${item.quantity}</span></div><b>${Mundix.price(Mundix.paymentAmount(item.product, method) * item.quantity)}</b></div>`).join('') : '<div class="admin-empty">Seu carrinho está vazio.</div>'}</div>
       <div class="summary-rows"><div class="summary-row"><span>Produtos</span><strong>${Mundix.price(subtotal)}</strong></div><div class="summary-row"><span>Entrega</span><strong>${shippingValue ? Mundix.price(shippingValue) : 'A calcular'}</strong></div></div>
       <div class="summary-total"><span>Total (${({pix:'Pix',debito:'débito',credito:'crédito'})[method]})</span><strong>${Mundix.price(subtotal + shippingValue)}</strong></div>
       ${items.length ? '<button class="button yellow" type="submit" form="checkoutForm">Confirmar pedido ' + icon('arrow') + '</button>' : '<a class="button yellow" href="produtos.html">Ver produtos ' + icon('arrow') + '</a>'}

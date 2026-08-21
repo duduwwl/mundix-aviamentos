@@ -240,7 +240,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .catalog-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-sm); }
 .catalog-image { position: relative; display: grid; height: 242px; place-items: center; background: var(--card-bg, #f7f4ec); overflow: hidden; }
 .catalog-image::before { content: ''; position: absolute; width: 220px; height: 220px; border: 1px solid rgba(20,20,20,.14); border-radius: 48% 52% 50% 50%; transform: rotate(25deg); }
-.catalog-image img { position: relative; z-index: 1; width: 82%; height: 210px; object-fit: contain; filter: drop-shadow(0 13px 8px rgba(20,20,20,.16)); }
+.catalog-image img { position: relative; z-index: 1; width: 82%; height: 210px; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 13px 8px rgba(20,20,20,.16)); }
 .catalog-card.mesh .catalog-image { --card-bg: #e0f4ec; }
 .catalog-card.amigurumi .catalog-image { --card-bg: #fff; }
 .catalog-card.amigurumi .catalog-image::before { display: none; }
@@ -268,7 +268,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .detail-image::before, .detail-image::after { content: ''; position: absolute; width: 390px; height: 390px; border: 1px solid rgba(20,20,20,.18); border-radius: 50%; }
 .detail-image::before { transform: translate(-33%, -34%); top: 0; left: 0; }
 .detail-image::after { transform: translate(36%, 37%); right: 0; bottom: 0; }
-.detail-image > img, .detail-product-canvas { position: relative; z-index: 2; width: 82%; height: 420px; object-fit: contain; filter: drop-shadow(0 24px 15px rgba(20,20,20,.18)); transition: opacity .18s ease, transform .3s ease; }
+.detail-image > img, .detail-product-canvas { position: relative; z-index: 2; width: 82%; height: 420px; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 24px 15px rgba(20,20,20,.18)); transition: opacity .18s ease, transform .3s ease; }
 .detail-product-canvas { display: block; height: auto; max-height: 420px; aspect-ratio: 1; }
 .detail-image .color-image-label { position: absolute; z-index: 4; right: 17px; bottom: 16px; padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.92); color: #5e594f; font-size: 10px; font-weight: 800; }
 .detail-info .product-category { color: #796614; }
@@ -315,13 +315,13 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .source-note { margin: 12px 0 0; color: #848075; font-size: 9px; }
 .source-note a { text-decoration: underline; }
 
-/* Catálogo ampliado: cada fotografia fica em uma base branca consistente. */
+/* As fotografias se integram ao fundo do site, sem caixas brancas próprias. */
 .feature-product .product-card-art,
 .catalog-image,
 .detail-image,
 .insta-tile,
 .cart-item-art,
-.summary-item-art { background: #fff !important; }
+.summary-item-art { background: transparent !important; }
 .feature-product .product-card-art::before,
 .catalog-image::before,
 .detail-image::before,
@@ -329,7 +329,9 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .feature-product .product-card-art img,
 .catalog-image img,
 .detail-image > img,
-.insta-tile img { object-fit: contain !important; object-position: center; }
+.insta-tile img,
+.cart-item-art img,
+.summary-item-art img { object-fit: contain !important; object-position: center; mix-blend-mode: multiply; }
 .feature-product .product-card-art img { padding: 14px; }
 .catalog-image img { padding: 13px; }
 
