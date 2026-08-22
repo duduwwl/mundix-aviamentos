@@ -145,10 +145,10 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .section-head h2 { max-width: 600px; margin: 8px 0 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(34px, 4.2vw, 56px); letter-spacing: -.07em; line-height: .98; }
 .section-head p { max-width: 415px; margin: 0; color: var(--muted); font-size: 14px; }
 .product-showcase { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.feature-product { position: relative; min-height: 427px; display: grid; grid-template-columns: 49% 51%; gap: 0; padding: 24px; border: 1px solid var(--line); border-radius: 26px; background: #fff; overflow: hidden; transition: box-shadow .25s ease, transform .25s ease; }
+.feature-product { position: relative; min-height: 427px; display: grid; grid-template-columns: 49% 51%; gap: 0; padding: 24px; border: 1px solid var(--line); border-radius: 26px; background: transparent; overflow: hidden; transition: box-shadow .25s ease, transform .25s ease; }
 .feature-product:hover { box-shadow: var(--shadow); transform: translateY(-5px); }
-.feature-product:nth-child(1) { background: #fff; }
-.feature-product:nth-child(2) { background: #fff; }
+.feature-product:nth-child(1) { background: transparent; }
+.feature-product:nth-child(2) { background: transparent; }
 .feature-product { border: 2px solid var(--yellow-deep); }
 .feature-product .button.small { min-height: 34px; padding: 0 10px; gap: 6px; font-size: 10px; line-height: 1; white-space: nowrap; }
 .feature-product .button.small svg { width: 12px; height: 12px; }
@@ -212,7 +212,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .insta-copy h2 { margin: 9px 0 12px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 35px; letter-spacing: -.06em; line-height: .98; }
 .insta-copy p { color: var(--muted); font-size: 12px; }
 .insta-images { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; }
-.insta-tile { position: relative; display: grid; min-height: 160px; place-items: center; border: 1px solid var(--line); border-radius: 12px; background: #fff; overflow: hidden; }
+.insta-tile { position: relative; display: grid; min-height: 160px; place-items: center; border: 1px solid var(--line); border-radius: 12px; background: transparent; overflow: hidden; }
 .insta-tile::before, .insta-tile::after { display: none; }
 .insta-tile img { width: 100%; height: 100%; padding: 10px; object-fit: contain; transition: transform .25s ease; }
 .insta-tile:hover img { transform: scale(1.04); }
@@ -236,11 +236,11 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .search-field svg { position: absolute; top: 50%; left: 12px; width: 16px; height: 16px; transform: translateY(-50%); color: #726e63; }
 .search-field input { width: 100%; height: 43px; padding: 0 12px 0 36px; border: 1px solid var(--line); border-radius: 10px; outline-color: var(--yellow-deep); background: white; font-size: 12px; }
 .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-.catalog-card { position: relative; display: flex; min-height: 448px; flex-direction: column; border: 1px solid var(--line); border-radius: 20px; background: white; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease; }
+.catalog-card { position: relative; display: flex; min-height: 448px; flex-direction: column; border: 1px solid var(--line); border-radius: 20px; background: transparent; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease; }
 .catalog-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-sm); }
 .catalog-image { position: relative; display: grid; height: 242px; place-items: center; background: var(--card-bg, #f7f4ec); overflow: hidden; }
 .catalog-image::before { content: ''; position: absolute; width: 220px; height: 220px; border: 1px solid rgba(20,20,20,.14); border-radius: 48% 52% 50% 50%; transform: rotate(25deg); }
-.catalog-image img { position: relative; z-index: 1; width: 82%; height: 210px; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 13px 8px rgba(20,20,20,.16)); }
+.catalog-image img { position: relative; z-index: 1; width: 82%; height: 210px; object-fit: contain; mix-blend-mode: normal; filter: drop-shadow(0 13px 8px rgba(20,20,20,.16)); }
 .catalog-card.mesh .catalog-image { --card-bg: #e0f4ec; }
 .catalog-card.amigurumi .catalog-image { --card-bg: #fff; }
 .catalog-card.amigurumi .catalog-image::before { display: none; }
@@ -268,7 +268,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .detail-image::before, .detail-image::after { content: ''; position: absolute; width: 390px; height: 390px; border: 1px solid rgba(20,20,20,.18); border-radius: 50%; }
 .detail-image::before { transform: translate(-33%, -34%); top: 0; left: 0; }
 .detail-image::after { transform: translate(36%, 37%); right: 0; bottom: 0; }
-.detail-image > img, .detail-product-canvas { position: relative; z-index: 2; width: 82%; height: 420px; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 24px 15px rgba(20,20,20,.18)); transition: opacity .18s ease, transform .3s ease; }
+.detail-image > img, .detail-product-canvas { position: relative; z-index: 2; width: 82%; height: 420px; object-fit: contain; mix-blend-mode: normal; filter: drop-shadow(0 24px 15px rgba(20,20,20,.18)); transition: opacity .18s ease, transform .3s ease; }
 .detail-product-canvas { display: block; height: auto; max-height: 420px; aspect-ratio: 1; }
 .detail-image .color-image-label { position: absolute; z-index: 4; right: 17px; bottom: 16px; padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.92); color: #5e594f; font-size: 10px; font-weight: 800; }
 .detail-info .product-category { color: #796614; }
@@ -331,7 +331,7 @@ body[data-page="products"] .page-intro h1 { font-family: 'DM Serif Display', Geo
 .detail-image > img,
 .insta-tile img,
 .cart-item-art img,
-.summary-item-art img { object-fit: contain !important; object-position: center; mix-blend-mode: multiply; }
+.summary-item-art img { object-fit: contain !important; object-position: center; mix-blend-mode: normal; }
 .feature-product .product-card-art img { padding: 14px; }
 .catalog-image img { padding: 13px; }
 
