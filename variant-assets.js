@@ -11,20 +11,22 @@
     'unique-8': ['unique-8', 'png']
   };
   const unavailableVariants = new Set(['unique-3|unique3-outono', 'unique-8|unique8-cookie']);
-  const preferredCatalogPhotos = {
-    'meliah-premium-35': 'premium35-rosa-bebe'
-  };
+  const transparentCatalogPhotos = Object.fromEntries([
+    'fio-malha', 'amigurumi', 'amigurumi-chenille', 'anne', 'barroco-maxcolor',
+    'charme', 'clea-duplo', 'duna', 'clea-1000', 'encanto', 'meliah-premium-35',
+    'meliah-lux', 'nautico-polipropileno', 'unique-3', 'unique-5', 'unique-8',
+    'fischer-glow', 'meliah-pop', 'policromia'
+  ].map(id => [id, `assets/catalog-transparent/${id}.png`]));
 
   function attachExactVariantPhotos(catalog) {
     catalog.products.forEach(product => {
+      if (transparentCatalogPhotos[product.id]) product.image = transparentCatalogPhotos[product.id];
       const variantFolder = exactVariantFolders[product.id];
       if (!variantFolder || !Array.isArray(product.colors)) return;
       const [folder, extension] = variantFolder;
       product.colors = product.colors
         .filter(color => !unavailableVariants.has(`${product.id}|${color.id}`))
         .map(color => ({ ...color, image: `assets/variants/${folder}/${color.id}.${extension}` }));
-      const preferred = product.colors.find(color => color.id === preferredCatalogPhotos[product.id]);
-      if (preferred) product.image = preferred.image;
     });
     return catalog;
   }
